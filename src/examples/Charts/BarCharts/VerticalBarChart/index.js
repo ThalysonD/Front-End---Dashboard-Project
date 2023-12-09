@@ -34,14 +34,12 @@ import {
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // VerticalBarChart configurations
 import configs from "examples/Charts/BarCharts/VerticalBarChart/configs";
 
-// Material Dashboard 2 React base styles
 import colors from "assets/theme/base/colors";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);

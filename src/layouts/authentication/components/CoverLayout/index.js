@@ -19,11 +19,9 @@ import PropTypes from "prop-types";
 // @mui material components
 import Grid from "@mui/material/Grid";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 // import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React example components
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import PageLayout from "examples/LayoutContainers/PageLayout";
 

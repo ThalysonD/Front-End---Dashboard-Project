@@ -19,10 +19,8 @@ Coded by www.creative-tim.com
  * You can customized the typography styles for the entire Material Dashboard 2 React using thie file.
  */
 
-// Material Dashboard 2 React Base Styles
 import colors from "assets/theme-dark/base/colors";
 
-// Material Dashboard 2 React Helper Functions
 import pxToRem from "assets/theme-dark/functions/pxToRem";
 
 const { white } = colors;

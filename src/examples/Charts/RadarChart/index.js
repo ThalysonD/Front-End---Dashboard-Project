@@ -34,17 +34,14 @@ import { Radar } from "react-chartjs-2";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // RadarChart configurations
 import configs from "examples/Charts/RadarChart/configs";
 
-// Material Dashboard 2 React base styles
 import colors from "assets/theme/base/colors";
 
-// Material Dashboard 2 React helper functions
 import rgba from "assets/theme/functions/rgba";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);

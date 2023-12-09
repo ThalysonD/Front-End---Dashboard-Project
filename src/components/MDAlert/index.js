@@ -21,7 +21,6 @@ import PropTypes from "prop-types";
 // @mui material components
 import Fade from "@mui/material/Fade";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 
 // Custom styles for the MDAlert

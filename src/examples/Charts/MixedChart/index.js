@@ -38,17 +38,14 @@ import {
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-// Material Dashboard 2 React helper functions
 import gradientChartLine from "assets/theme/functions/gradientChartLine";
 
 // MixedChart configurations
 import configs from "examples/Charts/MixedChart/configs";
 
-// Material Dashboard 2 React base styles
 import colors from "assets/theme/base/colors";
 
 ChartJS.register(
