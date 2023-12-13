@@ -38,6 +38,8 @@ function Basic() {
     }
   };
 
+  const isSignInDisabled = !email || !password;
+
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -106,11 +108,16 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth onClick={handleSignIn}>
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                onClick={handleSignIn}
+                disabled={isSignInDisabled}
+              >
                 sign in
               </MDButton>
             </MDBox>
-            {/* Adicionando a mensagem de erro */}
             {error && (
               <MDBox mt={2} mb={2} textAlign="center">
                 <MDTypography variant="body2" color="error">
