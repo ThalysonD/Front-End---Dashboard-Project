@@ -9,19 +9,23 @@ const login = async (email, senha) => {
       senha,
     });
 
-    return response.data;
+    const { token } = response.data;
+    return token;
   } catch (error) {
-    if (error.response) {
+    const status = error.response.status;
+    if (status === 400) {
       // O servidor respondeu com um status de erro (400 Bad Request)
       console.error("Erro na solicitação:", error.response.data);
 
-      if (error.response.status === 401) {
+      if (status === 401) {
         // Tratamento para status 401 (Unauthorized)
         console.error("Credenciais inválidas. Por favor, tente novamente.");
-      } else if (error.response.status === 403) {
+      } else if (status === 403) {
         // Tratamento para status 403 (Forbidden)
         console.error("Acesso proibido. Verifique suas permissões.");
       }
+    } else if (status === 404) {
+      throw new Error("Recurso não encontrado. Verifique a URL.");
     } else if (error.request) {
       // A solicitação foi feita, mas não recebeu resposta
       console.error("Sem resposta do servidor:", error.request);

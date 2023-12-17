@@ -26,15 +26,11 @@ function Basic() {
 
   const handleSignIn = async () => {
     try {
-      const response = await login(email, password);
-
-      const { token } = response;
-
+      const token = await login(email, password);
       localStorage.setItem("token", token);
-
       navigate("/dashboard");
     } catch (error) {
-      setError("Credenciais inválidas. Por favor, tente novamente.");
+      setError(error.message);
     }
   };
 
