@@ -7,6 +7,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
+import PrivateRoute from "services/PrivateRoute";
 
 import Icon from "@mui/material/Icon";
 
@@ -17,7 +18,7 @@ const routes = [
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
-    component: <Dashboard />,
+    component: <PrivateRoute>{<Dashboard />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -25,7 +26,7 @@ const routes = [
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
-    component: <Tables />,
+    component: <PrivateRoute>{<Tables />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -33,7 +34,7 @@ const routes = [
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
-    component: <Billing />,
+    component: <PrivateRoute>{<Billing />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -49,7 +50,7 @@ const routes = [
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
-    component: <Notifications />,
+    component: <PrivateRoute>{<Notifications />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -57,7 +58,7 @@ const routes = [
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
-    component: <Profile />,
+    component: <PrivateRoute>{<Profile />}</PrivateRoute>,
   },
   {
     route: "/authentication/sign-in",
@@ -65,7 +66,7 @@ const routes = [
   },
   {
     route: "/authentication/sign-up",
-    component: <SignUp />,
+    component: <PrivateRoute>{<SignUp />}</PrivateRoute>,
   },
   {
     type: "collapse",
