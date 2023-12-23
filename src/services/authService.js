@@ -37,4 +37,29 @@ const login = async (email, senha) => {
   }
 };
 
-export { login };
+const refreshToken = async () => {
+  try {
+    const response = await axios.post(
+      "https://gestao-app-08b3423b86e1.herokuapp.com/planner/auth/refresh"
+    );
+    localStorage.setItem("token", response.data.token);
+    return response.data.token;
+  } catch (error) {
+    console.error("Erro ao atualizar token:", error.message);
+    localStorage.removeItem("token");
+    window.location.href = "/authentication/sign-in";
+    throw error;
+  }
+};
+
+const checkTokenValidity = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    const { exp } = JSON.parse(atob(token.split(".")[1]));
+    if (Date.now() >= exp * 1000) {
+      return refreshToken();
+    }
+  }
+};
+
+export { login, refreshToken, checkTokenValidity };

@@ -27,6 +27,7 @@ import createCache from "@emotion/cache";
 import routes from "routes";
 
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import { checkTokenValidity } from "./services/authService";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -47,6 +48,19 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    const verifyAndRefreshToken = async () => {
+      try {
+        await checkTokenValidity();
+      } catch (error) {
+        console.error("Erro ao verificar/refresh token:", error);
+        localStorage.removeItem("token");
+        window.location.href = "/authentication/sign-in";
+      }
+    };
+    verifyAndRefreshToken();
+  }, [pathname]);
 
   // Cache for the rtl
   useMemo(() => {
