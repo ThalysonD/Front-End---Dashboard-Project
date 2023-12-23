@@ -61,10 +61,12 @@ const routes = [
     component: <PrivateRoute>{<Profile />}</PrivateRoute>,
   },
   {
+    key: "sign-in",
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
   {
+    key: "sign-up",
     route: "/authentication/sign-up",
     component: <PrivateRoute>{<SignUp />}</PrivateRoute>,
   },

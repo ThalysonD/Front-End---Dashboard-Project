@@ -14,6 +14,7 @@ import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { login } from "services/authService";
+import { setAuthHeaders } from "services/authService";
 
 function Basic() {
   const [email, setEmail] = useState("");
@@ -26,8 +27,9 @@ function Basic() {
 
   const handleSignIn = async () => {
     try {
-      const token = await login(email, password);
-      localStorage.setItem("token", token);
+      const response = await login(email, password);
+      const { token } = response;
+      setAuthHeaders(token);
       navigate("/dashboard");
     } catch (error) {
       setError(error.message);
