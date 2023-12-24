@@ -33,4 +33,32 @@ const registerEmployee = async (employeeData) => {
   }
 };
 
-export { registerEmployee };
+const fetchEmployees = async () => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.get(API_URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      const status = error.response.status;
+      if (status === 401 || status === 403) {
+        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
+      } else if (status === 404) {
+        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
+      }
+      throw new Error("Erro ao buscar funcionários. Tente novamente mais tarde.");
+    }
+    if (error.request) {
+      throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
+    }
+    throw error;
+  }
+};
+
+export { registerEmployee, fetchEmployees };
