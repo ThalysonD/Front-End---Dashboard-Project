@@ -1,5 +1,5 @@
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
+import Employees from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
@@ -7,6 +7,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
+import ForgotPassword from "layouts/authentication/forgot-password";
 import PrivateRoute from "services/PrivateRoute";
 
 import Icon from "@mui/material/Icon";
@@ -22,11 +23,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
+    name: "Employees",
+    key: "employees",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <PrivateRoute>{<Tables />}</PrivateRoute>,
+    route: "/employees",
+    component: <PrivateRoute>{<Employees />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -69,6 +70,11 @@ const routes = [
     key: "sign-up",
     route: "/authentication/sign-up",
     component: <PrivateRoute>{<SignUp />}</PrivateRoute>,
+  },
+  {
+    key: "forgot-password",
+    route: "/authentication/forgot-password",
+    component: <ForgotPassword />,
   },
   {
     type: "collapse",
