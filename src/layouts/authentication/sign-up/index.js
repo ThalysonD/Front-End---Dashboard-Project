@@ -12,9 +12,16 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import TextField from "@mui/material/TextField";
+import SendIcon from "@mui/icons-material/Send";
+import CircularProgress from "@mui/material/CircularProgress";
+import CheckIcon from "@mui/icons-material/Check";
+import ErrorIcon from "@mui/icons-material/Error";
 
 function Cover() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -24,11 +31,13 @@ function Cover() {
   const [phone, setPhone] = useState("");
   const [cpf, setCpf] = useState("");
   const [password, setPassword] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
+    setIsSuccess(false);
     const employeeData = {
       nome: name,
       email: email,
@@ -40,9 +49,29 @@ function Cover() {
 
     try {
       await registerEmployee(employeeData);
-      setSuccessMessage("Funcionário cadastrado com sucesso!");
+      setIsSuccess(true);
+      // Limpar campos após o sucesso
+      setTimeout(() => {
+        setName("");
+        setEmail("");
+        setPhone("");
+        setCpf("");
+        setPassword("");
+      }, 1000);
     } catch (error) {
-      setErrorMessage(error.message || "Ocorreu um erro desconhecido.");
+      setIsError(true);
+      setErrorMessage(error.message);
+      // Resetar o estado de erro após um intervalo
+      setTimeout(() => {
+        setIsError(false);
+      }, 1000);
+    } finally {
+      setIsSubmitting(false);
+      // Resetar formulário após um intervalo
+      setTimeout(() => {
+        setIsSuccess(false);
+        // Limpar estados do formulário aqui
+      }, 1000);
     }
   };
 
@@ -124,7 +153,14 @@ function Cover() {
                         aria-label="toggle password visibility"
                         onClick={togglePasswordVisibility}
                         edge="end"
-                        sx={{ opacity: 0.5, marginLeft: "-35px" }}
+                        sx={{
+                          opacity: 0.5,
+                          marginLeft: "-35px",
+                          transition: "transform 0.3s ease", // Adicionando animação de transição
+                        }}
+                        style={{
+                          transform: showPassword ? "rotate(0deg)" : "rotate(180deg)", // Alterando a rotação do ícone
+                        }}
                       >
                         {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
@@ -148,7 +184,24 @@ function Cover() {
               </MDBox>
             )}
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
+              <MDButton
+                variant="gradient"
+                fullWidth
+                type="submit"
+                color={isError ? "error" : isSuccess ? "success" : "info"} // Alterando a cor baseada no estado
+                endIcon={
+                  isSubmitting ? (
+                    <CircularProgress size={20} />
+                  ) : isError ? ( // Adicionando condição para o estado de erro
+                    <ErrorIcon color="error" /> // Ícone de erro
+                  ) : isSuccess ? (
+                    <CheckIcon />
+                  ) : (
+                    <SendIcon />
+                  )
+                }
+                disabled={isSubmitting}
+              >
                 Sign Up
               </MDButton>
             </MDBox>

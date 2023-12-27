@@ -1,12 +1,11 @@
 import axios from "axios";
-
-const API_URL = "https://gestao-app-08b3423b86e1.herokuapp.com/planner/funcionario";
+import BASE_URL from "./apiConfig";
 
 const registerEmployee = async (employeeData) => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.post(API_URL, employeeData, {
+    const response = await axios.post(`${BASE_URL}/funcionario`, employeeData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -37,7 +36,7 @@ const fetchEmployees = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(`${BASE_URL}/funcionario`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -1,10 +1,9 @@
 import axios from "axios";
-
-const API_URL = "https://gestao-app-08b3423b86e1.herokuapp.com/planner/auth";
+import BASE_URL from "./apiConfig";
 
 const login = async (email, senha) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, {
+    const response = await axios.post(`${BASE_URL}/auth/login`, {
       email,
       senha,
     });
@@ -39,9 +38,7 @@ const login = async (email, senha) => {
 
 const refreshToken = async () => {
   try {
-    const response = await axios.post(
-      "https://gestao-app-08b3423b86e1.herokuapp.com/planner/auth/refresh"
-    );
+    const response = await axios.post(`${BASE_URL}/auth/refresh`);
     localStorage.setItem("token", response.data.token);
     return response.data.token;
   } catch (error) {
