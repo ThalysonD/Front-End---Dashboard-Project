@@ -21,39 +21,18 @@ function Footer({ light }) {
           width="100%"
           display="flex"
           flexDirection={{ xs: "column", lg: "row" }}
-          justifyContent="space-between"
+          justifyContent="center" // Alterado para centralizar
           alignItems="center"
           px={1.5}
         >
-          <MDBox
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            flexWrap="wrap"
-            color={light ? "white" : "text"}
-            fontSize={size.sm}
-          >
-            &copy; {new Date().getFullYear()}, made with
-            <MDBox fontSize={size.md} color={light ? "white" : "dark"} mb={-0.5} mx={0.25}>
-              <Icon color="inherit" fontSize="inherit">
-                favorite
-              </Icon>
-            </MDBox>
-            by
-            <Link href="https://www.creative-tim.com/" target="_blank">
-              <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;Creative Tim&nbsp;
-              </MDTypography>
-            </Link>
-            for a better web.
-          </MDBox>
+          {/* Conteúdo removido anteriormente */}
           <MDBox
             component="ul"
             sx={({ breakpoints }) => ({
               display: "flex",
               flexWrap: "wrap",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "center", // Alterado para centralizar
               listStyle: "none",
               mt: 3,
               mb: 0,
@@ -64,6 +43,7 @@ function Footer({ light }) {
               },
             })}
           >
+            {/* Itens individuais */}
             <MDBox component="li" pr={2} lineHeight={1}>
               <Link href="https://www.creative-tim.com/" target="_blank">
                 <MDTypography
