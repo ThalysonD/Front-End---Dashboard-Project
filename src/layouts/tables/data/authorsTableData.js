@@ -2,6 +2,7 @@
 /* eslint-disable react/function-component-definition */
 import React, { useEffect, useState } from "react";
 import { fetchEmployees } from "services/employeeService";
+import { useNavigate } from "react-router-dom";
 
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -13,6 +14,11 @@ import team5 from "assets/images/defaultPhoto.jpg";
 
 export default function data() {
   const [employees, setEmployees] = useState([]);
+  const navigate = useNavigate();
+
+  const handleEditClick = (employeeId) => {
+    navigate(`/user-profile/${employeeId}`);
+  };
 
   useEffect(() => {
     const getEmployees = async () => {
@@ -70,8 +76,15 @@ export default function data() {
         </MDTypography>
       ),
       action: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          Edit
+        <MDTypography
+          component="a"
+          href="#"
+          variant="caption"
+          color="text"
+          fontWeight="medium"
+          onClick={() => handleEditClick(employee.id)} // Adicionando o manipulador de clique
+        >
+          View More
         </MDTypography>
       ),
     })),

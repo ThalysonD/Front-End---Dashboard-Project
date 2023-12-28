@@ -9,6 +9,7 @@ import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import ForgotPassword from "layouts/authentication/forgot-password";
 import PrivateRoute from "services/PrivateRoute";
+import UserProfile from "layouts/user-profile";
 
 import Icon from "@mui/material/Icon";
 
@@ -86,6 +87,11 @@ const routes = [
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/authentication/sign-out",
     component: <SignOut />,
+  },
+  {
+    key: "user-profile",
+    route: "/user-profile/:id",
+    component: <PrivateRoute>{<UserProfile />}</PrivateRoute>,
   },
 ];
 
