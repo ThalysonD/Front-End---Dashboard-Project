@@ -14,24 +14,46 @@ import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { login } from "services/authService";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import CircularProgress from "@mui/material/CircularProgress";
+import ErrorIcon from "@mui/icons-material/Error";
 
 function Basic() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
   const handleSignIn = async () => {
-    try {
-      const token = await login(email, password);
-      localStorage.setItem("token", token);
+    setIsSubmitting(true);
+    const result = await login(email, password);
+
+    if (result.error) {
+      setError(result.error);
+      setIsError(true);
+    } else {
+      localStorage.setItem("token", result.token);
       navigate("/dashboard");
-    } catch (error) {
-      setError(error.message);
     }
+
+    setIsSubmitting(false);
+    // Resetar o estado de erro após um intervalo
+    setTimeout(() => {
+      setIsError(false);
+    }, 3000);
   };
 
   const isSignInDisabled = !email || !password;
@@ -84,13 +106,34 @@ function Basic() {
             </MDBox>
             <MDBox mb={2}>
               <MDInput
-                type="password"
+                type={showPassword ? "text" : "password"}
                 label="Password"
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={togglePasswordVisibility}
+                        edge="end"
+                        sx={{
+                          opacity: 0.5,
+                          transition: "transform 0.3s ease",
+                        }}
+                        style={{
+                          transform: showPassword ? "rotate(0deg)" : "rotate(180deg)",
+                        }}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </MDBox>
+
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
               <MDTypography
@@ -106,14 +149,24 @@ function Basic() {
             <MDBox mt={4} mb={1}>
               <MDButton
                 variant="gradient"
-                color="info"
+                color={isError ? "error" : "info"}
                 fullWidth
                 onClick={handleSignIn}
-                disabled={isSignInDisabled}
+                disabled={isSignInDisabled || isSubmitting}
+                endIcon={
+                  isSubmitting ? (
+                    <CircularProgress size={15} />
+                  ) : isError ? (
+                    <span style={{ position: "relative", top: "0px", left: "-4px" }}>
+                      <ErrorIcon style={{ fontSize: "8px" }} />{" "}
+                    </span>
+                  ) : null
+                }
               >
-                sign in
+                Sign In
               </MDButton>
             </MDBox>
+
             {error && (
               <MDBox mt={2} mb={2} textAlign="center">
                 <MDTypography variant="body2" color="error">

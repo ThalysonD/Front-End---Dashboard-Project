@@ -9,30 +9,24 @@ const login = async (email, senha) => {
     });
 
     const { token } = response.data;
-    return token;
+    return { token };
   } catch (error) {
-    const status = error.response.status;
-    if (status === 400) {
-      // O servidor respondeu com um status de erro (400 Bad Request)
-      console.error("Erro na solicitação:", error.response.data);
-
+    let errorMessage = "Ocorreu um erro durante o login.";
+    if (error.response) {
+      const status = error.response.status;
       if (status === 401) {
-        // Tratamento para status 401 (Unauthorized)
-        console.error("Credenciais inválidas. Por favor, tente novamente.");
+        errorMessage = "Acesso proibido. Verifique suas permissões.";
       } else if (status === 403) {
-        // Tratamento para status 403 (Forbidden)
-        console.error("Acesso proibido. Verifique suas permissões.");
+        errorMessage = "Credenciais inválidas. Por favor, tente novamente.";
+      } else if (status === 404) {
+        errorMessage = "Recurso não encontrado. Verifique a URL.";
       }
-    } else if (status === 404) {
-      throw new Error("Recurso não encontrado. Verifique a URL.");
     } else if (error.request) {
-      // A solicitação foi feita, mas não recebeu resposta
-      console.error("Sem resposta do servidor:", error.request);
+      errorMessage = "Sem resposta do servidor.";
     } else {
-      // Algo aconteceu na configuração da solicitação que gerou um erro
-      console.error("Erro ao configurar a solicitação:", error.message);
+      errorMessage = error.message;
     }
-    throw error;
+    return { error: errorMessage };
   }
 };
 
