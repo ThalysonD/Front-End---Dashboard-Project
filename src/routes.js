@@ -1,10 +1,10 @@
+import SignIn from "layouts/authentication/sign-in";
 import Dashboard from "layouts/dashboard";
 import Employees from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import ForgotPassword from "layouts/authentication/forgot-password";
@@ -14,6 +14,11 @@ import UserProfile from "layouts/user-profile";
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  {
+    key: "sign-in",
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
   {
     type: "collapse",
     name: "Painel de Controle",
@@ -61,11 +66,6 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <PrivateRoute>{<Profile />}</PrivateRoute>,
-  },
-  {
-    key: "sign-in",
-    route: "/authentication/sign-in",
-    component: <SignIn />,
   },
   {
     type: "collapse",

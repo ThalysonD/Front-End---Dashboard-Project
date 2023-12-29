@@ -48,13 +48,16 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const [isTokenValid, setIsTokenValid] = useState(false);
 
   useEffect(() => {
     const verifyAndRefreshToken = async () => {
       try {
         await checkTokenValidity();
+        setIsTokenValid(true);
       } catch (error) {
         console.error("Erro ao verificar/refresh token:", error);
+        setIsTokenValid(false);
         localStorage.removeItem("token");
         window.location.href = "/authentication/sign-in";
       }
@@ -143,7 +146,7 @@ export default function App() {
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
         <CssBaseline />
-        {layout === "dashboard" && (
+        {layout === "dashboard" && isTokenValid && (
           <>
             <Sidenav
               color={sidenavColor}
@@ -160,14 +163,14 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
         </Routes>
       </ThemeProvider>
     </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {layout === "dashboard" && isTokenValid && (
         <>
           <Sidenav
             color={sidenavColor}
