@@ -55,11 +55,11 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
-      { Header: "action", accessor: "action", align: "center" },
+      { Header: "Usuário", accessor: "author", width: "45%", align: "left" },
+      { Header: "Função", accessor: "function", align: "left" },
+      { Header: "Status", accessor: "status", align: "center" },
+      { Header: "Contratado em", accessor: "employed", align: "center" },
+      { Header: "Ação", accessor: "action", align: "center" },
     ],
 
     rows: employees.map((employee) => ({
@@ -84,7 +84,7 @@ export default function data() {
           fontWeight="medium"
           onClick={() => handleEditClick(employee.id)} // Adicionando o manipulador de clique
         >
-          View More
+          Ver mais
         </MDTypography>
       ),
     })),

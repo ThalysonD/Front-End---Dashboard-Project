@@ -1,9 +1,3 @@
-/**
- * The base typography styles for the Material Dashboard 2 React.
- * You can add new typography style using this file.
- * You can customized the typography styles for the entire Material Dashboard 2 React using thie file.
- */
-
 import colors from "assets/theme-dark/base/colors";
 
 import pxToRem from "assets/theme-dark/functions/pxToRem";

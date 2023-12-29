@@ -11,7 +11,6 @@ import MDTypography from "components/MDTypography";
 import typography from "assets/theme/base/typography";
 
 function Footer({ company, links }) {
-  const { href, name } = company;
   const { size } = typography;
 
   const renderLinks = () =>
@@ -29,50 +28,25 @@ function Footer({ company, links }) {
     <MDBox
       width="100%"
       display="flex"
-      flexDirection={{ xs: "column", lg: "row" }}
-      justifyContent="space-between"
+      flexDirection="column"
+      justifyContent="center"
       alignItems="center"
       px={1.5}
     >
-      <MDBox
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexWrap="wrap"
-        color="text"
-        fontSize={size.sm}
-        px={1.5}
-      >
-        &copy; {new Date().getFullYear()}, made with
-        <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}>
-          <Icon color="inherit" fontSize="inherit">
-            favorite
-          </Icon>
-        </MDBox>
-        by
-        <Link href={href} target="_blank">
-          <MDTypography variant="button" fontWeight="medium">
-            &nbsp;{name}&nbsp;
-          </MDTypography>
-        </Link>
-        for a better web.
-      </MDBox>
+      {/* Remove o bloco de código abaixo que inclui "© 2023, made with by Creative Tim for a better web." */}
+
+      {/* Bloco centralizado para links */}
       <MDBox
         component="ul"
-        sx={({ breakpoints }) => ({
+        sx={{
           display: "flex",
           flexWrap: "wrap",
           alignItems: "center",
           justifyContent: "center",
           listStyle: "none",
-          mt: 3,
-          mb: 0,
+          m: 0,
           p: 0,
-
-          [breakpoints.up("lg")]: {
-            mt: 0,
-          },
-        })}
+        }}
       >
         {renderLinks()}
       </MDBox>

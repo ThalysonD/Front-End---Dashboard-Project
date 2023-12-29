@@ -51,7 +51,7 @@ function Footer({ light }) {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  Creative Tim
+                  Suporte
                 </MDTypography>
               </Link>
             </MDBox>
@@ -62,7 +62,7 @@ function Footer({ light }) {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  About Us
+                  Sobre nós
                 </MDTypography>
               </Link>
             </MDBox>
@@ -84,7 +84,7 @@ function Footer({ light }) {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  License
+                  Licença
                 </MDTypography>
               </Link>
             </MDBox>
