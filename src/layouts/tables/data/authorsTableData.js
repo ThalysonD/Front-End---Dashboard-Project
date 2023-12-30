@@ -12,7 +12,7 @@ import MDBadge from "components/MDBadge";
 // Images
 import team5 from "assets/images/defaultPhoto.jpg";
 
-export default function data() {
+export default function employeeData() {
   const [employees, setEmployees] = useState([]);
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function data() {
     const getEmployees = async () => {
       try {
         const data = await fetchEmployees();
-        setEmployees(data.content); // Ajuste conforme o formato da resposta
+        setEmployees(data.content);
       } catch (error) {
         console.error("Erro ao buscar funcionários:", error);
       }

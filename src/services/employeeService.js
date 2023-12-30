@@ -1,6 +1,30 @@
 import axios from "axios";
 import BASE_URL from "./apiConfig";
 
+// Função utilitária para manejar erros de API
+const handleApiError = (error) => {
+  if (error.response) {
+    const status = error.response.status;
+    switch (status) {
+      case 401:
+      case 403:
+        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
+      case 404:
+        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
+      case 400:
+        throw new Error("Dados inválidos. Verifique as informações fornecidas.");
+      default:
+        throw new Error("Erro na operação. Tente novamente mais tarde.");
+    }
+  }
+  if (error.request) {
+    throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
+  }
+  throw error;
+};
+
+// As funções a seguir foram ajustadas para usar a função utilitária handleApiError
+
 const registerEmployee = async (employeeData) => {
   const token = localStorage.getItem("token");
 
@@ -14,21 +38,7 @@ const registerEmployee = async (employeeData) => {
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401 || status === 403) {
-        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
-      } else if (status === 404) {
-        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
-      } else if (status === 400) {
-        throw new Error("Dados inválidos. Verifique as informações fornecidas.");
-      }
-      throw new Error("Erro ao cadastrar funcionário. Tente novamente mais tarde.");
-    }
-    if (error.request) {
-      throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
-    }
-    throw error;
+    handleApiError(error);
   }
 };
 
@@ -44,24 +54,12 @@ const fetchEmployees = async () => {
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401 || status === 403) {
-        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
-      } else if (status === 404) {
-        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
-      }
-      throw new Error("Erro ao buscar funcionários. Tente novamente mais tarde.");
-    }
-    if (error.request) {
-      throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
-    }
-    throw error;
+    handleApiError(error);
   }
 };
 
 const getProfile = async (employeeId) => {
-  const token = localStorage.getItem("token"); // Obter o token do localStorage
+  const token = localStorage.getItem("token");
 
   if (!token) {
     throw new Error("Token de autenticação não encontrado.");
@@ -70,25 +68,13 @@ const getProfile = async (employeeId) => {
   try {
     const response = await axios.get(`${BASE_URL}/funcionario/${employeeId}`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Adicionar o token ao cabeçalho de autorização
+        Authorization: `Bearer ${token}`,
       },
     });
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401 || status === 403) {
-        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
-      } else if (status === 404) {
-        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
-      }
-      throw new Error("Erro ao buscar funcionário. Tente novamente mais tarde.");
-    }
-    if (error.request) {
-      throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
-    }
-    throw error;
+    handleApiError(error);
   }
 };
 
@@ -108,22 +94,7 @@ const updateProfile = async (userData, userId) => {
 
     return response.data;
   } catch (error) {
-    // Tratar erros
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401 || status === 403) {
-        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
-      } else if (status === 404) {
-        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
-      } else if (status === 400) {
-        throw new Error("Dados inválidos. Verifique as informações fornecidas.");
-      }
-      throw new Error("Erro ao atualizar perfil. Tente novamente mais tarde.");
-    }
-    if (error.request) {
-      throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
-    }
-    throw error;
+    handleApiError(error);
   }
 };
 
@@ -141,19 +112,7 @@ const deleteEmployee = async (userId) => {
       },
     });
   } catch (error) {
-    if (error.response) {
-      const status = error.response.status;
-      if (status === 401 || status === 403) {
-        throw new Error("Acesso negado. Verifique suas credenciais e tente novamente.");
-      } else if (status === 404) {
-        throw new Error("Recurso não encontrado. Verifique a URL e tente novamente.");
-      }
-      throw new Error("Erro ao deletar funcionário. Tente novamente mais tarde.");
-    }
-    if (error.request) {
-      throw new Error("Sem resposta do servidor. Verifique sua conexão e tente novamente.");
-    }
-    throw error;
+    handleApiError(error);
   }
 };
 

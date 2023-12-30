@@ -89,12 +89,8 @@ Header.defaultProps = {
 };
 
 Header.propTypes = {
+  name: PropTypes.string.isRequired,
   children: PropTypes.node,
-};
-
-Header.propTypes = {
-  name: PropTypes.string.isRequired, // Adiciona validação para 'name'
-  children: PropTypes.node, // Se já existir, mantenha a validação para 'children'
 };
 
 export default Header;
