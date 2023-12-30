@@ -1,15 +1,18 @@
 import SignIn from "layouts/authentication/sign-in";
 import Dashboard from "layouts/dashboard";
 import Employees from "layouts/tables";
+import Clientes from "layouts/tablesClient";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignUp from "layouts/authentication/sign-up";
+import SignUpEmployees from "layouts/authentication/sign-up";
+import SignUpClientes from "layouts/authentication/sign-up-client";
 import SignOut from "layouts/authentication/sign-out";
 import ForgotPassword from "layouts/authentication/forgot-password";
 import PrivateRoute from "services/PrivateRoute";
 import UserProfile from "layouts/user-profile";
+import ClientProfile from "layouts/client-profile";
 
 import Icon from "@mui/material/Icon";
 
@@ -34,6 +37,14 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/employees",
     component: <PrivateRoute>{<Employees />}</PrivateRoute>,
+  },
+  {
+    type: "collapse",
+    name: "Clientes",
+    key: "clients",
+    icon: <Icon fontSize="small">group</Icon>,
+    route: "/clients",
+    component: <PrivateRoute>{<Clientes />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -68,12 +79,14 @@ const routes = [
     component: <PrivateRoute>{<Profile />}</PrivateRoute>,
   },
   {
-    type: "collapse",
-    name: "Cadastrar",
-    key: "sign-up",
-    icon: <Icon fontSize="small">person_add</Icon>,
-    route: "/authentication/sign-up",
-    component: <PrivateRoute>{<SignUp />}</PrivateRoute>,
+    key: "sign-up-employees",
+    route: "/authentication/sign-up/employees",
+    component: <PrivateRoute>{<SignUpEmployees />}</PrivateRoute>,
+  },
+  {
+    key: "sign-up-clientes",
+    route: "/authentication/sign-up/clients",
+    component: <PrivateRoute>{<SignUpClientes />}</PrivateRoute>,
   },
   {
     key: "forgot-password",
@@ -92,6 +105,11 @@ const routes = [
     key: "user-profile",
     route: "/user-profile/:id",
     component: <PrivateRoute>{<UserProfile />}</PrivateRoute>,
+  },
+  {
+    key: "client-profile",
+    route: "/client-profile/:id",
+    component: <PrivateRoute>{<ClientProfile />}</PrivateRoute>,
   },
 ];
 

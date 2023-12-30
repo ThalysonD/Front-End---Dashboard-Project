@@ -13,10 +13,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
+import clientesTableData from "layouts/tablesClient/data/clientsTableData";
 
-function Tables() {
-  const { columns, rows } = authorsTableData();
+function TablesClient() {
+  const { columns, rows } = clientesTableData();
 
   return (
     <DashboardLayout>
@@ -39,16 +39,16 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Tabela de funcionários
+                  Tabela de clientes
                 </MDTypography>
                 <Button
                   variant="contained"
                   color="primary"
-                  href="/authentication/sign-up/employees"
+                  href="/authentication/sign-up/clients"
                   startIcon={<Icon>person_add</Icon>}
                   style={{ color: "white" }}
                 >
-                  Cadastrar funcionário
+                  Cadastrar cliente
                 </Button>
               </MDBox>
               <MDBox pt={3}>
@@ -69,4 +69,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default TablesClient;

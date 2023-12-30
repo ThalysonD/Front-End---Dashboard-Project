@@ -15,7 +15,7 @@ import breakpoints from "assets/theme/base/breakpoints";
 import defaultPhoto from "assets/images/defaultPhoto.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 
-function Header({ name, children }) {
+function HeaderClientProfile({ name, children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [setTabValue] = useState(0);
 
@@ -84,13 +84,13 @@ function Header({ name, children }) {
   );
 }
 
-Header.defaultProps = {
+HeaderClientProfile.defaultProps = {
   children: "",
 };
 
-Header.propTypes = {
+HeaderClientProfile.propTypes = {
   name: PropTypes.string.isRequired,
   children: PropTypes.node,
 };
 
-export default Header;
+export default HeaderClientProfile;

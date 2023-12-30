@@ -83,7 +83,7 @@ function DefaultNavbar({ transparent, light, action }) {
           <DefaultNavbarLink
             icon="account_circle"
             name="criar conta"
-            route="/authentication/sign-up"
+            route="/authentication/sign-up/employees"
             light={light}
           />
           <DefaultNavbarLink
