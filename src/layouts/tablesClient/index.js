@@ -12,7 +12,6 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
-// Data
 import clientesTableData from "layouts/tablesClient/data/clientsTableData";
 
 function TablesClient() {

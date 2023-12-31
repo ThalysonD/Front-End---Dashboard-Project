@@ -29,7 +29,6 @@ import ErrorIcon from "@mui/icons-material/Error";
 const ClientProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [notification, setNotification] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -72,7 +71,6 @@ const ClientProfile = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      // Redirecione para a tela de login ou mostre um erro
       console.error("Token de autenticação não encontrado. Usuário não está logado.");
       return;
     }
@@ -137,12 +135,9 @@ const ClientProfile = () => {
         };
         await updateProfile(updatedData, id);
         setIsSuccess(true);
-        setNotification(true);
 
-        // Aguarde um momento para mostrar o ícone de sucesso e a mensagem
         setTimeout(() => {
           setIsSubmitting(false);
-          // Depois de um segundo, redefina o estado de sucesso e editável
           setTimeout(() => {
             setIsSuccess(false);
             setIsEditable(false);
@@ -189,7 +184,6 @@ const ClientProfile = () => {
           flexDirection="column"
         >
           <MDBox display="flex" flexDirection="row" mt={5} mb={3}>
-            {/* Nome */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -218,7 +212,6 @@ const ClientProfile = () => {
               </MDBox>
             </MDBox>
 
-            {/* E-mail */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -248,9 +241,7 @@ const ClientProfile = () => {
             </MDBox>
           </MDBox>
 
-          {/* Telefone e CPF */}
           <MDBox display="flex" flexDirection="row" mb={3}>
-            {/* Telefone */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -273,7 +264,6 @@ const ClientProfile = () => {
               </MDBox>
             </MDBox>
 
-            {/* CPF */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -297,7 +287,6 @@ const ClientProfile = () => {
             </MDBox>
           </MDBox>
 
-          {/* Botões */}
           <MDBox mt={4} display="flex" justifyContent="space-between">
             <MDBox display="flex">
               <MDButton variant="gradient" color="info" onClick={handleEdit}>
@@ -320,11 +309,11 @@ const ClientProfile = () => {
                 isSubmitting ? (
                   <CircularProgress size={20} />
                 ) : isError ? (
-                  <ErrorIcon /> // Ícone de erro
+                  <ErrorIcon />
                 ) : isSuccess ? (
-                  <CheckIcon /> // Ícone de sucesso
+                  <CheckIcon />
                 ) : (
-                  <SendIcon /> // Ícone de enviar
+                  <SendIcon />
                 )
               }
               disabled={isSubmitting || isSuccess}
@@ -335,7 +324,6 @@ const ClientProfile = () => {
         </MDBox>
       </Header>
       <Footer />
-      {/* Diálogo de confirmação de exclusão */}
       <Dialog
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}

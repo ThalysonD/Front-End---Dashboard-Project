@@ -50,7 +50,6 @@ function CoverClient() {
     try {
       await registerCliente(clienteData);
       setIsSuccess(true);
-      // Limpar campos após o sucesso
       setTimeout(() => {
         setName("");
         setEmail("");
@@ -61,16 +60,13 @@ function CoverClient() {
     } catch (error) {
       setIsError(true);
       setErrorMessage(error.message);
-      // Resetar o estado de erro após um intervalo
       setTimeout(() => {
         setIsError(false);
       }, 1000);
     } finally {
       setIsSubmitting(false);
-      // Resetar formulário após um intervalo
       setTimeout(() => {
         setIsSuccess(false);
-        // Limpar estados do formulário aqui
       }, 1000);
     }
   };
@@ -156,10 +152,10 @@ function CoverClient() {
                         sx={{
                           opacity: 0.5,
                           marginLeft: "-35px",
-                          transition: "transform 0.3s ease", // Adicionando animação de transição
+                          transition: "transform 0.3s ease",
                         }}
                         style={{
-                          transform: showPassword ? "rotate(0deg)" : "rotate(180deg)", // Alterando a rotação do ícone
+                          transform: showPassword ? "rotate(0deg)" : "rotate(180deg)",
                         }}
                       >
                         {showPassword ? <Visibility /> : <VisibilityOff />}
@@ -188,12 +184,12 @@ function CoverClient() {
                 variant="gradient"
                 fullWidth
                 type="submit"
-                color={isError ? "error" : isSuccess ? "success" : "info"} // Alterando a cor baseada no estado
+                color={isError ? "error" : isSuccess ? "success" : "info"}
                 endIcon={
                   isSubmitting ? (
                     <CircularProgress size={20} />
-                  ) : isError ? ( // Adicionando condição para o estado de erro
-                    <ErrorIcon color="error" /> // Ícone de erro
+                  ) : isError ? (
+                    <ErrorIcon color="error" />
                   ) : isSuccess ? (
                     <CheckIcon />
                   ) : (

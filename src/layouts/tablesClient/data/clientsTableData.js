@@ -83,7 +83,7 @@ export default function clienteData() {
           variant="caption"
           color="text"
           fontWeight="medium"
-          onClick={() => handleEditClick(cliente.id)} // Adicionando o manipulador de clique
+          onClick={() => handleEditClick(cliente.id)}
         >
           Ver mais
         </MDTypography>

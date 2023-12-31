@@ -39,12 +39,32 @@ const routes = [
     component: <PrivateRoute>{<Employees />}</PrivateRoute>,
   },
   {
+    key: "sign-up-employees",
+    route: "/authentication/sign-up/employees",
+    component: <PrivateRoute>{<SignUpEmployees />}</PrivateRoute>,
+  },
+  {
+    key: "user-profile",
+    route: "/user-profile/:id",
+    component: <PrivateRoute>{<UserProfile />}</PrivateRoute>,
+  },
+  {
     type: "collapse",
     name: "Clientes",
     key: "clients",
     icon: <Icon fontSize="small">group</Icon>,
     route: "/clients",
     component: <PrivateRoute>{<Clientes />}</PrivateRoute>,
+  },
+  {
+    key: "sign-up-clientes",
+    route: "/authentication/sign-up/clients",
+    component: <PrivateRoute>{<SignUpClientes />}</PrivateRoute>,
+  },
+  {
+    key: "client-profile",
+    route: "/client-profile/:id",
+    component: <PrivateRoute>{<ClientProfile />}</PrivateRoute>,
   },
   {
     type: "collapse",
@@ -79,16 +99,6 @@ const routes = [
     component: <PrivateRoute>{<Profile />}</PrivateRoute>,
   },
   {
-    key: "sign-up-employees",
-    route: "/authentication/sign-up/employees",
-    component: <PrivateRoute>{<SignUpEmployees />}</PrivateRoute>,
-  },
-  {
-    key: "sign-up-clientes",
-    route: "/authentication/sign-up/clients",
-    component: <PrivateRoute>{<SignUpClientes />}</PrivateRoute>,
-  },
-  {
     key: "forgot-password",
     route: "/authentication/forgot-password",
     component: <ForgotPassword />,
@@ -100,16 +110,6 @@ const routes = [
     icon: <Icon fontSize="small">logout</Icon>,
     route: "/authentication/sign-out",
     component: <SignOut />,
-  },
-  {
-    key: "user-profile",
-    route: "/user-profile/:id",
-    component: <PrivateRoute>{<UserProfile />}</PrivateRoute>,
-  },
-  {
-    key: "client-profile",
-    route: "/client-profile/:id",
-    component: <PrivateRoute>{<ClientProfile />}</PrivateRoute>,
   },
 ];
 

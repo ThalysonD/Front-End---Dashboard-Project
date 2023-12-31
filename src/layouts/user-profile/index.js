@@ -29,7 +29,6 @@ import ErrorIcon from "@mui/icons-material/Error";
 const UserProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [notification, setNotification] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -137,7 +136,6 @@ const UserProfile = () => {
         };
         await updateProfile(updatedData, id);
         setIsSuccess(true);
-        setNotification(true);
 
         // Aguarde um momento para mostrar o ícone de sucesso e a mensagem
         setTimeout(() => {

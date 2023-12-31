@@ -1,6 +1,21 @@
 import axios from "axios";
 import BASE_URL from "./apiConfig";
 
+const getToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Token de autenticação não encontrado.");
+  }
+  return token;
+};
+
+const axiosHeaders = () => ({
+  headers: {
+    Authorization: `Bearer ${getToken()}`,
+    "Content-Type": "application/json",
+  },
+});
+
 // Função utilitária para manejar erros de API
 const handleApiError = (error) => {
   if (error.response) {
@@ -23,19 +38,9 @@ const handleApiError = (error) => {
   throw error;
 };
 
-// As funções a seguir foram ajustadas para usar a função utilitária handleApiError
-
 const registerCliente = async (clientData) => {
-  const token = localStorage.getItem("token");
-
   try {
-    const response = await axios.post(`${BASE_URL}/cliente`, clientData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await axios.post(`${BASE_URL}/cliente`, clientData, axiosHeaders());
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -43,15 +48,8 @@ const registerCliente = async (clientData) => {
 };
 
 const fetchClientes = async () => {
-  const token = localStorage.getItem("token");
-
   try {
-    const response = await axios.get(`${BASE_URL}/cliente`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const response = await axios.get(`${BASE_URL}/cliente`, axiosHeaders());
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -59,19 +57,8 @@ const fetchClientes = async () => {
 };
 
 const getProfile = async (clienteId) => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    throw new Error("Token de autenticação não encontrado.");
-  }
-
   try {
-    const response = await axios.get(`${BASE_URL}/cliente/${clienteId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const response = await axios.get(`${BASE_URL}/cliente/${clienteId}`, axiosHeaders());
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -79,19 +66,8 @@ const getProfile = async (clienteId) => {
 };
 
 const updateProfile = async (userData, userId) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("Token de autenticação não encontrado.");
-  }
-
   try {
-    const response = await axios.put(`${BASE_URL}/cliente/${userId}`, userData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await axios.put(`${BASE_URL}/cliente/${userId}`, userData, axiosHeaders());
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -99,18 +75,8 @@ const updateProfile = async (userData, userId) => {
 };
 
 const deleteCliente = async (userId) => {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    throw new Error("Token de autenticação não encontrado.");
-  }
-
   try {
-    await axios.delete(`${BASE_URL}/cliente/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await axios.delete(`${BASE_URL}/cliente/${userId}`, axiosHeaders());
   } catch (error) {
     handleApiError(error);
   }
