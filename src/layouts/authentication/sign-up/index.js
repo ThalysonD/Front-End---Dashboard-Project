@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useReducer, useEffect } from "react";
+import PropTypes from "prop-types";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -17,62 +18,103 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 
-function Cover() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
+const initialState = {
+  name: "",
+  email: "",
+  phone: "",
+  cpf: "",
+  password: "",
+  errorMessage: "",
+  showPassword: false,
+  isSubmitting: false,
+  isSuccess: false,
+  isError: false,
+};
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.field]: action.value };
+    case "SUBMIT":
+      return { ...state, isSubmitting: true, isError: false, isSuccess: false };
+    case "SUCCESS":
+      return { ...initialState, isSuccess: true };
+    case "ERROR":
+      return { ...state, isError: true, errorMessage: action.message, isSubmitting: false };
+    case "TOGGLE_PASSWORD_VISIBILITY":
+      return { ...state, showPassword: !state.showPassword };
+    case "RESET":
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+function CustomInput({ label, type, value, onChange }) {
+  return (
+    <MDBox mb={2}>
+      <MDInput
+        type={type}
+        label={label}
+        variant="standard"
+        fullWidth
+        value={value}
+        onChange={onChange}
+      />
+    </MDBox>
+  );
+}
+
+CustomInput.propTypes = {
+  label: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
+
+function Cover() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    let timeout;
+    if (state.isSuccess) {
+      timeout = setTimeout(() => {
+        dispatch({ type: "RESET" });
+      }, 1000);
+    }
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [state.isSuccess]);
+
+  const handleChange = (field) => (e) => {
+    dispatch({ type: "SET_FIELD", field, value: e.target.value });
   };
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsSubmitting(true);
-    setIsSuccess(false);
+    dispatch({ type: "SUBMIT" });
+
     const employeeData = {
-      nome: name,
-      email: email,
-      telefone: phone,
-      cpf: cpf,
-      senha: password,
+      nome: state.name,
+      email: state.email,
+      telefone: state.phone,
+      cpf: state.cpf,
+      senha: state.password,
       id: 0,
     };
 
     try {
       await registerEmployee(employeeData);
-      setIsSuccess(true);
-      // Limpar campos após o sucesso
-      setTimeout(() => {
-        setName("");
-        setEmail("");
-        setPhone("");
-        setCpf("");
-        setPassword("");
-      }, 1000);
+      dispatch({ type: "SUCCESS" });
     } catch (error) {
-      setIsError(true);
-      setErrorMessage(error.message);
-      // Resetar o estado de erro após um intervalo
-      setTimeout(() => {
-        setIsError(false);
-      }, 1000);
-    } finally {
-      setIsSubmitting(false);
-      // Resetar formulário após um intervalo
-      setTimeout(() => {
-        setIsSuccess(false);
-        // Limpar estados do formulário aqui
-      }, 1000);
+      dispatch({ type: "ERROR", message: error.message });
     }
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    dispatch({ type: "TOGGLE_PASSWORD_VISIBILITY" });
   };
 
   return (
@@ -98,88 +140,54 @@ function Cover() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="Name"
-                variant="standard"
-                fullWidth
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="email"
-                label="Email"
-                variant="standard"
-                fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="Phone"
-                variant="standard"
-                fullWidth
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                label="CPF"
-                variant="standard"
-                fullWidth
-                value={cpf}
-                onChange={(e) => setCpf(e.target.value)}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <TextField
-                type={showPassword ? "text" : "password"}
-                label="Password"
-                variant="standard"
-                fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={togglePasswordVisibility}
-                        edge="end"
-                        sx={{
-                          opacity: 0.5,
-                          marginLeft: "-35px",
-                          transition: "transform 0.3s ease", // Adicionando animação de transição
-                        }}
-                        style={{
-                          transform: showPassword ? "rotate(0deg)" : "rotate(180deg)", // Alterando a rotação do ícone
-                        }}
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </MDBox>
-            {successMessage && (
-              <MDBox my={2}>
-                <MDTypography variant="body2" color="success">
-                  {successMessage}
-                </MDTypography>
-              </MDBox>
-            )}
-            {errorMessage && (
+            <CustomInput
+              label="Name"
+              type="text"
+              value={state.name}
+              onChange={handleChange("name")}
+            />
+            <CustomInput
+              label="Email"
+              type="email"
+              value={state.email}
+              onChange={handleChange("email")}
+            />
+            <CustomInput
+              label="Phone"
+              type="text"
+              value={state.phone}
+              onChange={handleChange("phone")}
+            />
+            <CustomInput label="CPF" type="text" value={state.cpf} onChange={handleChange("cpf")} />
+            <TextField
+              type={state.showPassword ? "text" : "password"}
+              label="Password"
+              variant="standard"
+              fullWidth
+              value={state.password}
+              onChange={handleChange("password")}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleTogglePasswordVisibility}
+                      sx={{
+                        opacity: 0.5,
+                        transition: "transform 0.3s ease",
+                        transform: state.showPassword ? "rotate(0deg)" : "rotate(180deg)",
+                      }}
+                    >
+                      {state.showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {state.errorMessage && (
               <MDBox my={2}>
                 <MDTypography variant="body2" color="error">
-                  {errorMessage}
+                  {state.errorMessage}
                 </MDTypography>
               </MDBox>
             )}
@@ -188,19 +196,19 @@ function Cover() {
                 variant="gradient"
                 fullWidth
                 type="submit"
-                color={isError ? "error" : isSuccess ? "success" : "info"} // Alterando a cor baseada no estado
+                color={state.isError ? "error" : state.isSuccess ? "success" : "info"}
                 endIcon={
-                  isSubmitting ? (
+                  state.isSubmitting ? (
                     <CircularProgress size={20} />
-                  ) : isError ? ( // Adicionando condição para o estado de erro
-                    <ErrorIcon color="error" /> // Ícone de erro
-                  ) : isSuccess ? (
+                  ) : state.isError ? (
+                    <ErrorIcon color="error" />
+                  ) : state.isSuccess ? (
                     <CheckIcon />
                   ) : (
                     <SendIcon />
                   )
                 }
-                disabled={isSubmitting}
+                disabled={state.isSubmitting}
               >
                 Sign Up
               </MDButton>
