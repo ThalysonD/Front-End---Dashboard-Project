@@ -1,62 +1,76 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
-import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
+import { Card, Grid, IconButton, InputAdornment, CircularProgress, Switch } from "@mui/material";
+import {
+  Facebook as FacebookIcon,
+  GitHub as GitHubIcon,
+  Google as GoogleIcon,
+  Visibility,
+  VisibilityOff,
+  Error as ErrorIcon,
+} from "@mui/icons-material";
+
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+
 import { login } from "services/authService";
-import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import CircularProgress from "@mui/material/CircularProgress";
-import ErrorIcon from "@mui/icons-material/Error";
+import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import PropTypes from "prop-types";
+
+const SocialIcon = ({ href, Icon }) => (
+  <Grid item xs={2}>
+    <MDTypography component="a" href={href} variant="body1" color="white">
+      <Icon color="inherit" />
+    </MDTypography>
+  </Grid>
+);
+
+SocialIcon.propTypes = {
+  href: PropTypes.string.isRequired,
+  Icon: PropTypes.elementType.isRequired,
+};
+
+const TIMEOUT_DURATION = 3000;
 
 function Basic() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+    rememberMe: false,
+    error: null,
+    showPassword: false,
+    isSubmitting: false,
+    isError: false,
+  });
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const handleInputChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
   };
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const toggleState = (key) => {
+    setState({ ...state, [key]: !state[key] });
+  };
 
   const handleSignIn = async () => {
-    setIsSubmitting(true);
-    const result = await login(email, password);
+    setState({ ...state, isSubmitting: true });
+    const result = await login(state.email, state.password);
 
     if (result.error) {
-      setError(result.error);
-      setIsError(true);
+      setState({ ...state, error: result.error, isError: true, isSubmitting: false });
+      setTimeout(() => {
+        setState({ ...state, isError: false });
+      }, TIMEOUT_DURATION);
     } else {
       localStorage.setItem("token", result.token);
       navigate("/dashboard");
     }
-
-    setIsSubmitting(false);
-    // Resetar o estado de erro após um intervalo
-    setTimeout(() => {
-      setIsError(false);
-    }, 3000);
   };
 
-  const isSignInDisabled = !email || !password;
+  const isSignInDisabled = !state.email || !state.password;
 
   return (
     <BasicLayout image={bgImage}>
@@ -76,21 +90,9 @@ function Basic() {
             Sign in
           </MDTypography>
           <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
-              </MDTypography>
-            </Grid>
+            <SocialIcon href="#" Icon={FacebookIcon} />
+            <SocialIcon href="#" Icon={GitHubIcon} />
+            <SocialIcon href="#" Icon={GoogleIcon} />
           </Grid>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
@@ -100,33 +102,31 @@ function Basic() {
                 type="email"
                 label="Email"
                 fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                value={state.email}
+                onChange={handleInputChange}
               />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
-                type={showPassword ? "text" : "password"}
+                type={state.showPassword ? "text" : "password"}
                 label="Password"
                 fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                value={state.password}
+                onChange={handleInputChange}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={togglePasswordVisibility}
+                        onClick={() => toggleState("showPassword")}
                         edge="end"
-                        sx={{
-                          opacity: 0.5,
-                          transition: "transform 0.3s ease",
-                        }}
+                        sx={{ opacity: 0.5, transition: "transform 0.3s ease" }}
                         style={{
-                          transform: showPassword ? "rotate(0deg)" : "rotate(180deg)",
+                          transform: state.showPassword ? "rotate(0deg)" : "rotate(180deg)",
                         }}
                       >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                        {state.showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -135,12 +135,12 @@ function Basic() {
             </MDBox>
 
             <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
+              <Switch checked={state.rememberMe} onChange={() => toggleState("rememberMe")} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
                 color="text"
-                onClick={handleSetRememberMe}
+                onClick={() => toggleState("rememberMe")}
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >
                 &nbsp;&nbsp;Remember me
@@ -149,14 +149,14 @@ function Basic() {
             <MDBox mt={4} mb={1}>
               <MDButton
                 variant="gradient"
-                color={isError ? "error" : "info"}
+                color={state.isError ? "error" : "info"}
                 fullWidth
                 onClick={handleSignIn}
-                disabled={isSignInDisabled || isSubmitting}
+                disabled={isSignInDisabled || state.isSubmitting}
                 endIcon={
-                  isSubmitting ? (
+                  state.isSubmitting ? (
                     <CircularProgress size={15} />
-                  ) : isError ? (
+                  ) : state.isError ? (
                     <span style={{ position: "relative", top: "0px", left: "-4px" }}>
                       <ErrorIcon style={{ fontSize: "8px" }} />{" "}
                     </span>
@@ -167,10 +167,10 @@ function Basic() {
               </MDButton>
             </MDBox>
 
-            {error && (
+            {state.error && (
               <MDBox mt={2} mb={2} textAlign="center">
                 <MDTypography variant="body2" color="error">
-                  {error}
+                  {state.error}
                 </MDTypography>
               </MDBox>
             )}
