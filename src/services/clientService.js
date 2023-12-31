@@ -38,7 +38,7 @@ const handleApiError = (error) => {
   throw error;
 };
 
-const registerCliente = async (clientData) => {
+const registerClient = async (clientData) => {
   try {
     const response = await axios.post(`${BASE_URL}/cliente`, clientData, axiosHeaders());
     return response.data;
@@ -47,7 +47,7 @@ const registerCliente = async (clientData) => {
   }
 };
 
-const fetchClientes = async () => {
+const fetchClients = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/cliente`, axiosHeaders());
     return response.data;
@@ -56,9 +56,9 @@ const fetchClientes = async () => {
   }
 };
 
-const getProfile = async (clienteId) => {
+const getProfile = async (clientId) => {
   try {
-    const response = await axios.get(`${BASE_URL}/cliente/${clienteId}`, axiosHeaders());
+    const response = await axios.get(`${BASE_URL}/cliente/${clientId}`, axiosHeaders());
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -74,7 +74,7 @@ const updateProfile = async (userData, userId) => {
   }
 };
 
-const deleteCliente = async (userId) => {
+const deleteClient = async (userId) => {
   try {
     await axios.delete(`${BASE_URL}/cliente/${userId}`, axiosHeaders());
   } catch (error) {
@@ -82,4 +82,4 @@ const deleteCliente = async (userId) => {
   }
 };
 
-export { registerCliente, fetchClientes, getProfile, updateProfile, deleteCliente };
+export { registerClient, fetchClients, getProfile, updateProfile, deleteClient };

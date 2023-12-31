@@ -6,7 +6,7 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
-import { registerCliente } from "services/clientService";
+import { registerClient } from "services/clientService";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
@@ -38,7 +38,7 @@ function CoverClient() {
     event.preventDefault();
     setIsSubmitting(true);
     setIsSuccess(false);
-    const clienteData = {
+    const clientData = {
       nome: name,
       email: email,
       telefone: phone,
@@ -48,7 +48,7 @@ function CoverClient() {
     };
 
     try {
-      await registerCliente(clienteData);
+      await registerClient(clientData);
       setIsSuccess(true);
       setTimeout(() => {
         setName("");

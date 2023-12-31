@@ -12,7 +12,7 @@ import Footer from "examples/Footer";
 
 import Header from "layouts/client-profile/Header";
 import { useParams } from "react-router-dom";
-import { getProfile, updateProfile, deleteCliente } from "services/clientService";
+import { getProfile, updateProfile, deleteClient } from "services/clientService";
 import {
   Dialog,
   DialogActions,
@@ -60,7 +60,7 @@ const ClientProfile = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteCliente(id);
+      await deleteClient(id);
       navigate("/clients");
     } catch (error) {
       console.error("Erro ao deletar funcionário:", error);

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import React, { useEffect, useState } from "react";
-import { fetchClientes } from "services/clientService";
+import { fetchClients } from "services/clientService";
 
 import { useNavigate } from "react-router-dom";
 
@@ -13,24 +13,24 @@ import MDBadge from "components/MDBadge";
 // Images
 import team5 from "assets/images/defaultPhoto.jpg";
 
-export default function clienteData() {
-  const [clientes, setclientes] = useState([]);
+export default function clientData() {
+  const [clients, setclients] = useState([]);
   const navigate = useNavigate();
 
-  const handleEditClick = (clienteId) => {
-    navigate(`/client-profile/${clienteId}`);
+  const handleEditClick = (clientId) => {
+    navigate(`/client-profile/${clientId}`);
   };
 
   useEffect(() => {
-    const getClientes = async () => {
+    const getclients = async () => {
       try {
-        const data = await fetchClientes();
-        setclientes(data.content);
+        const data = await fetchClients();
+        setclients(data.content);
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error("Erro ao buscar clients:", error);
       }
     };
-    getClientes();
+    getclients();
   }, []);
 
   const Author = ({ image, name, email }) => (
@@ -63,8 +63,8 @@ export default function clienteData() {
       { Header: "Ação", accessor: "action", align: "center" },
     ],
 
-    rows: clientes.map((cliente) => ({
-      author: <Author image={team5} name={cliente.nome} email={cliente.email} />,
+    rows: clients.map((client) => ({
+      author: <Author image={team5} name={client.nome} email={client.email} />,
       function: <Job title="Job Title" description="Description" />,
       status: (
         <MDBox ml={-1}>
@@ -83,7 +83,7 @@ export default function clienteData() {
           variant="caption"
           color="text"
           fontWeight="medium"
-          onClick={() => handleEditClick(cliente.id)}
+          onClick={() => handleEditClick(client.id)}
         >
           Ver mais
         </MDTypography>

@@ -12,10 +12,10 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
-import clientesTableData from "layouts/tablesClient/data/clientsTableData";
+import clientsTableData from "layouts/tablesClient/data/clientsTableData";
 
 function TablesClient() {
-  const { columns, rows } = clientesTableData();
+  const { columns, rows } = clientsTableData();
 
   return (
     <DashboardLayout>
