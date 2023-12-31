@@ -10,9 +10,9 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-import Header from "layouts/user-profile/Header";
+import Header from "layouts/client-profile/Header";
 import { useParams } from "react-router-dom";
-import { getProfile, updateProfile, deleteEmployee } from "services/employeeService";
+import { getProfile, updateProfile, deleteClient } from "services/clientService";
 import {
   Dialog,
   DialogActions,
@@ -26,7 +26,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 
-const UserProfile = () => {
+const ClientProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isEditable, setIsEditable] = useState(false);
@@ -34,13 +34,13 @@ const UserProfile = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [user, setUser] = useState({
+  const [client, setClient] = useState({
     name: "",
     email: "",
     newPassword: "",
     confirmPassword: "",
-    phone: "", // inicializado como string vazia
-    cpf: "", // inicializado como string vazia
+    phone: "",
+    cpf: "",
   });
 
   const [errors, setErrors] = useState({
@@ -60,8 +60,8 @@ const UserProfile = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteEmployee(id);
-      navigate("/employees");
+      await deleteClient(id);
+      navigate("/clients");
     } catch (error) {
       console.error("Erro ao deletar funcionário:", error);
     }
@@ -71,14 +71,13 @@ const UserProfile = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      // Redirecione para a tela de login ou mostre um erro
       console.error("Token de autenticação não encontrado. Usuário não está logado.");
       return;
     }
 
-    const fetchUserData = async () => {
+    const fetchClientData = async () => {
       const profileData = await getProfile(id);
-      setUser({
+      setClient({
         name: profileData.nome ?? "",
         email: profileData.email ?? "",
         phone: profileData.telefone ?? "",
@@ -86,12 +85,12 @@ const UserProfile = () => {
       });
     };
 
-    fetchUserData();
+    fetchClientData();
   }, [id]);
 
   const changeHandler = (e) => {
-    setUser({
-      ...user,
+    setClient({
+      ...client,
       [e.target.name]: e.target.value,
     });
   };
@@ -105,22 +104,22 @@ const UserProfile = () => {
     const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let hasError = false;
 
-    if (user.name.trim().length === 0) {
+    if (client.name.trim().length === 0) {
       setErrors((prevErrors) => ({ ...prevErrors, nameError: true }));
       hasError = true;
     }
 
-    if (user.email.trim().length === 0 || !user.email.trim().match(mailFormat)) {
+    if (client.email.trim().length === 0 || !client.email.trim().match(mailFormat)) {
       setErrors((prevErrors) => ({ ...prevErrors, emailError: true }));
       hasError = true;
     }
 
-    if (user.confirmPassword || user.newPassword) {
-      if (user.confirmPassword.trim() !== user.newPassword.trim()) {
+    if (client.confirmPassword || client.newPassword) {
+      if (client.confirmPassword.trim() !== client.newPassword.trim()) {
         setErrors((prevErrors) => ({ ...prevErrors, confirmPassError: true }));
         hasError = true;
       }
-      if (user.newPassword.trim().length < 8) {
+      if (client.newPassword.trim().length < 8) {
         setErrors((prevErrors) => ({ ...prevErrors, newPassError: true }));
         hasError = true;
       }
@@ -129,18 +128,16 @@ const UserProfile = () => {
     if (!hasError) {
       try {
         const updatedData = {
-          nome: user.name,
-          email: user.email,
-          telefone: user.phone,
-          cpf: user.cpf,
+          nome: client.name,
+          email: client.email,
+          telefone: client.phone,
+          cpf: client.cpf,
         };
         await updateProfile(updatedData, id);
         setIsSuccess(true);
 
-        // Aguarde um momento para mostrar o ícone de sucesso e a mensagem
         setTimeout(() => {
           setIsSubmitting(false);
-          // Depois de um segundo, redefina o estado de sucesso e editável
           setTimeout(() => {
             setIsSuccess(false);
             setIsEditable(false);
@@ -166,7 +163,7 @@ const UserProfile = () => {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mb={2} />
-      <Header name={user.name}>
+      <Header name={client.name}>
         {isSuccess && (
           <MDAlert color="success" mt="20px">
             <MDTypography variant="body2" style={{ color: "white", fontWeight: "bold" }}>
@@ -187,7 +184,6 @@ const UserProfile = () => {
           flexDirection="column"
         >
           <MDBox display="flex" flexDirection="row" mt={5} mb={3}>
-            {/* Nome */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -203,7 +199,7 @@ const UserProfile = () => {
                   type="text"
                   fullWidth
                   name="name"
-                  value={user.name}
+                  value={client.name}
                   onChange={changeHandler}
                   error={errors.nameError}
                   disabled={!isEditable}
@@ -216,7 +212,6 @@ const UserProfile = () => {
               </MDBox>
             </MDBox>
 
-            {/* E-mail */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -232,7 +227,7 @@ const UserProfile = () => {
                   type="email"
                   fullWidth
                   name="email"
-                  value={user.email}
+                  value={client.email}
                   onChange={changeHandler}
                   error={errors.emailError}
                   disabled={!isEditable}
@@ -246,9 +241,7 @@ const UserProfile = () => {
             </MDBox>
           </MDBox>
 
-          {/* Telefone e CPF */}
           <MDBox display="flex" flexDirection="row" mb={3}>
-            {/* Telefone */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -264,14 +257,13 @@ const UserProfile = () => {
                   type="text"
                   fullWidth
                   name="phone"
-                  value={user.phone}
+                  value={client.phone}
                   onChange={changeHandler}
                   disabled={!isEditable}
                 />
               </MDBox>
             </MDBox>
 
-            {/* CPF */}
             <MDBox
               display="flex"
               flexDirection="column"
@@ -287,7 +279,7 @@ const UserProfile = () => {
                   type="text"
                   fullWidth
                   name="cpf"
-                  value={user.cpf}
+                  value={client.cpf}
                   onChange={changeHandler}
                   disabled={!isEditable}
                 />
@@ -295,7 +287,6 @@ const UserProfile = () => {
             </MDBox>
           </MDBox>
 
-          {/* Botões */}
           <MDBox mt={4} display="flex" justifyContent="space-between">
             <MDBox display="flex">
               <MDButton variant="gradient" color="info" onClick={handleEdit}>
@@ -318,11 +309,11 @@ const UserProfile = () => {
                 isSubmitting ? (
                   <CircularProgress size={20} />
                 ) : isError ? (
-                  <ErrorIcon /> // Ícone de erro
+                  <ErrorIcon />
                 ) : isSuccess ? (
-                  <CheckIcon /> // Ícone de sucesso
+                  <CheckIcon />
                 ) : (
-                  <SendIcon /> // Ícone de enviar
+                  <SendIcon />
                 )
               }
               disabled={isSubmitting || isSuccess}
@@ -333,7 +324,6 @@ const UserProfile = () => {
         </MDBox>
       </Header>
       <Footer />
-      {/* Diálogo de confirmação de exclusão */}
       <Dialog
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
@@ -359,4 +349,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default ClientProfile;
