@@ -14,6 +14,7 @@ import team5 from "assets/images/defaultPhoto.jpg";
 
 export default function employeeData() {
   const [employees, setEmployees] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
 
   const handleEditClick = (employeeId) => {
@@ -24,7 +25,9 @@ export default function employeeData() {
     const getEmployees = async () => {
       try {
         const data = await fetchEmployees();
+        console.log(data.totalPages);
         setEmployees(data.content);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Erro ao buscar funcionários:", error);
       }
@@ -88,5 +91,6 @@ export default function employeeData() {
         </MDTypography>
       ),
     })),
+    totalPages: totalPages,
   };
 }

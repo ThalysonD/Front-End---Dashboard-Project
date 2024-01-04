@@ -42,15 +42,18 @@ const registerEmployee = async (employeeData) => {
   }
 };
 
-const fetchEmployees = async () => {
+const fetchEmployees = async (pageNumber = 0, pageSize = 10) => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(`${BASE_URL}/funcionario`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `${BASE_URL}/funcionario?page=${pageNumber}&size=${pageSize}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     return response.data;
   } catch (error) {

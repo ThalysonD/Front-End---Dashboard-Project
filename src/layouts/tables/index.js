@@ -16,7 +16,7 @@ import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
+  const { columns, rows, totalPages } = authorsTableData();
 
   return (
     <DashboardLayout>
@@ -54,6 +54,7 @@ function Tables() {
               <MDBox pt={3}>
                 <DataTable
                   table={{ columns, rows }}
+                  totalPages={totalPages}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
