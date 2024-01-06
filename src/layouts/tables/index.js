@@ -1,3 +1,5 @@
+import React from "react";
+import { useState, useEffect } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -14,9 +16,52 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
+import EmployeePagination from "examples/Pagination/PaginationEmployee";
+import { fetchEmployees } from "services/employeeService";
 
 function Tables() {
-  const { columns, rows, totalPages } = authorsTableData();
+  const [employees, setEmployees] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentEmployees, setCurrentEmployees] = useState([]);
+  const { columns, rows } = authorsTableData({
+    employees,
+    totalPages,
+  });
+
+  useEffect(() => {
+    return () => {
+      setCurrentPage(0);
+    };
+  }, [setCurrentPage]);
+
+  useEffect(() => {
+    const getEmployees = async () => {
+      try {
+        const data = await fetchEmployees();
+        console.log(data.totalPages);
+        setEmployees(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Erro ao buscar funcionários:", error);
+      }
+    };
+    getEmployees();
+  }, []);
+
+  const handleChangePage = async (type, page) => {
+    console.log("minha pagina sendo chamada");
+    setCurrentPage(page);
+    try {
+      const data = await fetchEmployees(page); // Busca os dados da página selecionada
+      setEmployees(data.content);
+      setTotalPages(data.totalPages);
+      console.log(`Dados da página ${page}:`, data.content); // Imprime os dados da página no console
+    } catch (error) {
+      console.error("Erro ao buscar dados da página:", error);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -56,11 +101,16 @@ function Tables() {
                   table={{ columns, rows }}
                   totalPages={totalPages}
                   isSorted={false}
+                  currentPage={currentPage}
+                  onChangePage={handleChangePage}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
                 />
               </MDBox>
+              {/* <MDBox pt={3}>
+                <EmployeePagination totalPages={totalPages} onPageChange={handlePageChange} />
+              </MDBox> */}
             </Card>
           </Grid>
         </Grid>

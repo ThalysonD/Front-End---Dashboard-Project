@@ -12,28 +12,12 @@ import MDBadge from "components/MDBadge";
 // Images
 import team5 from "assets/images/defaultPhoto.jpg";
 
-export default function employeeData() {
-  const [employees, setEmployees] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+export default function employeeData({ employees, totalPages }) {
   const navigate = useNavigate();
 
   const handleEditClick = (employeeId) => {
     navigate(`/user-profile/${employeeId}`);
   };
-
-  useEffect(() => {
-    const getEmployees = async () => {
-      try {
-        const data = await fetchEmployees();
-        console.log(data.totalPages);
-        setEmployees(data.content);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("Erro ao buscar funcionários:", error);
-      }
-    };
-    getEmployees();
-  }, []);
 
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>

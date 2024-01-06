@@ -21,6 +21,8 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
+  onChangePage,
+  currentPage,
 }) {
   const columns = useMemo(() => table.columns, [table]);
   const data = useMemo(() => table.rows, [table]);
@@ -47,9 +49,14 @@ function DataTable({
   } = tableInstance;
 
   const renderPagination = Array.from({ length: totalPages }, (_, i) => {
-    console.log(`Creating button for page ${i + 1}`);
+    console.log(currentPage, "meu page");
     return (
-      <MDPagination item key={i} onClick={() => gotoPage(i)} active={pageIndex === i}>
+      <MDPagination
+        item
+        key={i}
+        onClick={() => onChangePage("teste", i)}
+        active={currentPage === i}
+      >
         {i + 1}
       </MDPagination>
     );
@@ -68,6 +75,7 @@ function DataTable({
     }
     return false;
   };
+  console.log(totalPages, "totalpages");
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
@@ -110,16 +118,18 @@ function DataTable({
             prepareRow(row);
             return (
               <TableRow key={key} {...row.getRowProps()}>
-                {row.cells.map((cell, idx) => (
-                  <DataTableBodyCell
-                    key={idx}
-                    noBorder={noEndBorder && page.length - 1 === key}
-                    align={cell.column.align ? cell.column.align : "left"}
-                    {...cell.getCellProps()}
-                  >
-                    {cell.render("Cell")}
-                  </DataTableBodyCell>
-                ))}
+                {row?.cells?.length
+                  ? row?.cells?.map((cell, idx) => (
+                      <DataTableBodyCell
+                        key={idx}
+                        noBorder={noEndBorder && page.length - 1 === key}
+                        align={cell.column.align ? cell.column.align : "left"}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render("Cell")}
+                      </DataTableBodyCell>
+                    ))
+                  : null}
               </TableRow>
             );
           })}
@@ -140,19 +150,19 @@ function DataTable({
             </MDTypography>
           </MDBox>
         )}
-        {totalPages > 1 && (
+        {totalPages && (
           <MDPagination
             variant={pagination.variant ? pagination.variant : "gradient"}
             color={pagination.color ? pagination.color : "info"}
           >
             {canPreviousPage && (
-              <MDPagination item onClick={() => previousPage()}>
+              <MDPagination item onClick={(e) => onChangePage("previous", e)}>
                 <Icon sx={{ fontWeight: "bold" }}>chevron_left</Icon>
               </MDPagination>
             )}
             {renderPagination}
             {canNextPage && (
-              <MDPagination item onClick={() => nextPage()}>
+              <MDPagination item onClick={(e) => onChangePage("next", e)}>
                 <Icon sx={{ fontWeight: "bold" }}>chevron_right</Icon>
               </MDPagination>
             )}
@@ -190,6 +200,9 @@ DataTable.propTypes = {
   }),
   isSorted: PropTypes.bool,
   noEndBorder: PropTypes.bool,
+  totalPages: PropTypes.number,
+  onChangePage: PropTypes.func,
+  currentPage: PropTypes.number,
   totalPages: PropTypes.number,
 };
 
