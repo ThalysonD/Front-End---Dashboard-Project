@@ -42,40 +42,61 @@ function DataTable({
     page,
     canPreviousPage,
     canNextPage,
-    nextPage,
-    previousPage,
-    gotoPage,
     state: { pageIndex, globalFilter },
   } = tableInstance;
 
-  const renderPagination = Array.from({ length: totalPages }, (_, i) => {
-    console.log(currentPage, "meu page");
-    return (
-      <MDPagination
-        item
-        key={i}
-        onClick={() => onChangePage("teste", i)}
-        active={currentPage === i}
-      >
-        {i + 1}
-      </MDPagination>
-    );
-  });
+  const renderPagination = () => {
+    const maxPagesToShow = 5;
+    let startPage = Math.floor(currentPage / maxPagesToShow) * maxPagesToShow;
+    let endPage = Math.min(startPage + maxPagesToShow, totalPages);
+
+    const paginationItems = [];
+    for (let i = startPage; i < endPage; i++) {
+      paginationItems.push(
+        <MDPagination
+          item
+          key={i}
+          onClick={() => onChangePage("page", i)}
+          active={currentPage === i}
+        >
+          {i + 1}
+        </MDPagination>
+      );
+    }
+    return paginationItems;
+  };
+
+  const handleChangePage = (type, value) => {
+    const maxPagesToShow = 5;
+    if (type === "nextRange") {
+      const nextPage = Math.floor((currentPage + maxPagesToShow) / maxPagesToShow) * maxPagesToShow;
+      onChangePage("page", nextPage);
+    } else if (type === "prevRange") {
+      const prevPage = Math.floor((currentPage - 1) / maxPagesToShow) * maxPagesToShow - 1;
+      onChangePage("page", Math.max(prevPage, 0));
+    } else {
+      onChangePage("page", value);
+    }
+  };
+
+  const isNextButtonDisabled = () => {
+    const maxPageInCurrentRange = Math.floor(currentPage / 5) * 5 + 4;
+    return maxPageInCurrentRange >= totalPages - 1;
+  };
 
   const [search, setSearch] = useState(globalFilter);
   const onSearchChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined);
+    tableInstance.setGlobalFilter(value || undefined);
   }, 100);
 
   const setSortedValue = (column) => {
     if (isSorted && column.isSorted) {
-      return column.isSortedDesc ? "desc" : "asce";
+      return column.isSortedDesc ? "desc" : "asc";
     } else if (isSorted) {
       return "none";
     }
     return false;
   };
-  console.log(totalPages, "totalpages");
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
@@ -155,17 +176,21 @@ function DataTable({
             variant={pagination.variant ? pagination.variant : "gradient"}
             color={pagination.color ? pagination.color : "info"}
           >
-            {canPreviousPage && (
-              <MDPagination item onClick={(e) => onChangePage("previous", e)}>
-                <Icon sx={{ fontWeight: "bold" }}>chevron_left</Icon>
-              </MDPagination>
-            )}
-            {renderPagination}
-            {canNextPage && (
-              <MDPagination item onClick={(e) => onChangePage("next", e)}>
-                <Icon sx={{ fontWeight: "bold" }}>chevron_right</Icon>
-              </MDPagination>
-            )}
+            <MDPagination
+              item
+              onClick={() => handleChangePage("prevRange")}
+              disabled={currentPage < 5}
+            >
+              <Icon>chevron_left</Icon>
+            </MDPagination>
+            {renderPagination()}
+            <MDPagination
+              item
+              onClick={() => handleChangePage("nextRange")}
+              disabled={isNextButtonDisabled()}
+            >
+              <Icon>chevron_right</Icon>
+            </MDPagination>
           </MDPagination>
         )}
       </MDBox>

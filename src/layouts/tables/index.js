@@ -16,19 +16,12 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
-import EmployeePagination from "examples/Pagination/PaginationEmployee";
 import { fetchEmployees } from "services/employeeService";
 
 function Tables() {
   const [employees, setEmployees] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
-
   const [currentPage, setCurrentPage] = useState(0);
-  const [currentEmployees, setCurrentEmployees] = useState([]);
-  const { columns, rows } = authorsTableData({
-    employees,
-    totalPages,
-  });
 
   useEffect(() => {
     return () => {
@@ -39,8 +32,7 @@ function Tables() {
   useEffect(() => {
     const getEmployees = async () => {
       try {
-        const data = await fetchEmployees();
-        console.log(data.totalPages);
+        const data = await fetchEmployees(currentPage);
         setEmployees(data.content);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -48,20 +40,16 @@ function Tables() {
       }
     };
     getEmployees();
-  }, []);
+  }, [currentPage]);
 
   const handleChangePage = async (type, page) => {
-    console.log("minha pagina sendo chamada");
     setCurrentPage(page);
-    try {
-      const data = await fetchEmployees(page); // Busca os dados da página selecionada
-      setEmployees(data.content);
-      setTotalPages(data.totalPages);
-      console.log(`Dados da página ${page}:`, data.content); // Imprime os dados da página no console
-    } catch (error) {
-      console.error("Erro ao buscar dados da página:", error);
-    }
   };
+
+  const { columns, rows } = authorsTableData({
+    employees,
+    totalPages,
+  });
 
   return (
     <DashboardLayout>
@@ -108,9 +96,6 @@ function Tables() {
                   noEndBorder
                 />
               </MDBox>
-              {/* <MDBox pt={3}>
-                <EmployeePagination totalPages={totalPages} onPageChange={handlePageChange} />
-              </MDBox> */}
             </Card>
           </Grid>
         </Grid>
