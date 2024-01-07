@@ -1,8 +1,5 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-import React, { useEffect, useState } from "react";
-import { fetchClients } from "services/clientService";
-
+import React from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import MDBox from "components/MDBox";
@@ -10,28 +7,14 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-// Images
 import team5 from "assets/images/defaultPhoto.jpg";
 
-export default function clientData() {
-  const [clients, setclients] = useState([]);
+export default function ClientData({ clients }) {
   const navigate = useNavigate();
 
   const handleEditClick = (clientId) => {
     navigate(`/client-profile/${clientId}`);
   };
-
-  useEffect(() => {
-    const getclients = async () => {
-      try {
-        const data = await fetchClients();
-        setclients(data.content);
-      } catch (error) {
-        console.error("Erro ao buscar clients:", error);
-      }
-    };
-    getclients();
-  }, []);
 
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -45,7 +28,13 @@ export default function clientData() {
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
+  Author.propTypes = {
+    image: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+  };
+
+  const Job = ({ title = "Job Title", description = "Description" }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}
@@ -54,40 +43,49 @@ export default function clientData() {
     </MDBox>
   );
 
-  return {
-    columns: [
-      { Header: "Usuário", accessor: "author", width: "45%", align: "left" },
-      { Header: "Função", accessor: "function", align: "left" },
-      { Header: "Status", accessor: "status", align: "center" },
-      { Header: "Contratado em", accessor: "employed", align: "center" },
-      { Header: "Ação", accessor: "action", align: "center" },
-    ],
-
-    rows: clients.map((client) => ({
-      author: <Author image={team5} name={client.nome} email={client.email} />,
-      function: <Job title="Job Title" description="Description" />,
-      status: (
-        <MDBox ml={-1}>
-          <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-        </MDBox>
-      ),
-      employed: (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          23/04/18
-        </MDTypography>
-      ),
-      action: (
-        <MDTypography
-          component="a"
-          href="#"
-          variant="caption"
-          color="text"
-          fontWeight="medium"
-          onClick={() => handleEditClick(client.id)}
-        >
-          Ver mais
-        </MDTypography>
-      ),
-    })),
+  Job.propTypes = {
+    title: PropTypes.string,
+    description: PropTypes.string,
   };
+
+  const columns = [
+    { Header: "Usuário", accessor: "author", width: "45%", align: "left" },
+    { Header: "Função", accessor: "function", align: "left" },
+    { Header: "Status", accessor: "status", align: "center" },
+    { Header: "Contratado em", accessor: "employed", align: "center" },
+    { Header: "Ação", accessor: "action", align: "center" },
+  ];
+
+  const rows = clients.map((client) => ({
+    author: <Author image={team5} name={client.nome} email={client.email} />,
+    function: <Job title="Client Role" description="Client Description" />,
+    status: (
+      <MDBox ml={-1}>
+        <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
+      </MDBox>
+    ),
+    employed: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {client.employedDate}
+      </MDTypography>
+    ),
+    action: (
+      <MDTypography
+        component="a"
+        href="#"
+        variant="caption"
+        color="text"
+        fontWeight="medium"
+        onClick={() => handleEditClick(client.id)}
+      >
+        Ver mais
+      </MDTypography>
+    ),
+  }));
+
+  return { columns, rows };
 }
+
+ClientData.propTypes = {
+  clients: PropTypes.arrayOf(PropTypes.object).isRequired,
+};

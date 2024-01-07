@@ -1,4 +1,4 @@
-// @mui material components
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -10,12 +10,44 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
+import DataTableClient from "examples/TablesClient/DataTableClient";
 
+// Data
 import clientsTableData from "layouts/tablesClient/data/clientsTableData";
+import { fetchClients } from "services/clientService";
 
 function TablesClient() {
-  const { columns, rows } = clientsTableData();
+  const [clients, setClients] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      setCurrentPage(0);
+    };
+  }, [setCurrentPage]);
+
+  useEffect(() => {
+    const getClients = async () => {
+      try {
+        const data = await fetchClients(currentPage);
+        setClients(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Erro ao buscar clientes:", error);
+      }
+    };
+    getClients();
+  }, [currentPage]);
+
+  const handleChangePage = (type, page) => {
+    setCurrentPage(page);
+  };
+
+  const { columns, rows } = clientsTableData({
+    clients,
+    totalPages,
+  });
 
   return (
     <DashboardLayout>
@@ -51,9 +83,12 @@ function TablesClient() {
                 </Button>
               </MDBox>
               <MDBox pt={3}>
-                <DataTable
+                <DataTableClient
                   table={{ columns, rows }}
+                  totalPages={totalPages}
                   isSorted={false}
+                  currentPage={currentPage}
+                  onChangePage={handleChangePage}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
