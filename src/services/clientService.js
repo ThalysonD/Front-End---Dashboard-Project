@@ -36,7 +36,7 @@ const registerClient = async (clientData) => {
   }
 };
 
-const fetchClients = async (pageNumber = 0, pageSize = 3) => {
+const fetchClients = async (pageNumber = 0, pageSize = 10) => {
   try {
     const response = await axios.get(`${BASE_URL}/cliente?page=${pageNumber}&size=${pageSize}`, {
       headers: {
