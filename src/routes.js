@@ -2,12 +2,14 @@ import SignIn from "layouts/authentication/sign-in";
 import Dashboard from "layouts/dashboard";
 import Employees from "layouts/tables";
 import Clients from "layouts/tablesClient";
+import Sales from "layouts/talbesSales";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignUpEmployees from "layouts/authentication/sign-up";
 import SignUpClients from "layouts/authentication/sign-up-client";
+import RegisterSale from "layouts/authentication/register-sales";
 import SignOut from "layouts/authentication/sign-out";
 import ForgotPassword from "layouts/authentication/forgot-password";
 import PrivateRoute from "services/PrivateRoute";
@@ -65,6 +67,19 @@ const routes = [
     key: "client-profile",
     route: "/client-profile/:id",
     component: <PrivateRoute>{<ClientProfile />}</PrivateRoute>,
+  },
+  {
+    type: "collapse",
+    name: "Vender",
+    key: "sale",
+    icon: <Icon fontSize="small">sell</Icon>,
+    route: "/sale",
+    component: <Sales />,
+  },
+  {
+    key: "registerSales",
+    route: "register/sale",
+    component: <PrivateRoute>{<RegisterSale />}</PrivateRoute>,
   },
   {
     type: "collapse",
