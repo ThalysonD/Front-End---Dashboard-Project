@@ -36,7 +36,7 @@ const registerEmployee = async (employeeData) => {
   }
 };
 
-const fetchEmployees = async (pageNumber = 0, pageSize = 10) => {
+const fetchEmployees = async (pageNumber = 0, pageSize = 3) => {
   try {
     const response = await axios.get(
       `${BASE_URL}/funcionario?page=${pageNumber}&size=${pageSize}`,

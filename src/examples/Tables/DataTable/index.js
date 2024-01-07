@@ -63,11 +63,11 @@ function DataTable({
     }
 
     const maxPagesToShow = 5;
-    let startPage = Math.floor(currentPage / maxPagesToShow) * maxPagesToShow;
-    let endPage = Math.min(startPage + maxPagesToShow, totalPages);
+    let rangeStart = Math.floor(currentPage / maxPagesToShow) * maxPagesToShow;
+    let rangeEnd = Math.min(rangeStart + maxPagesToShow, totalPages);
 
     const paginationItems = [];
-    for (let i = startPage; i < endPage; i++) {
+    for (let i = rangeStart; i < rangeEnd; i++) {
       paginationItems.push(
         <MDPagination
           item
@@ -80,6 +80,22 @@ function DataTable({
       );
     }
     return paginationItems;
+  };
+
+  const onNextRange = () => {
+    const newPage = Math.floor(currentPage / 5) * 5 + 5;
+    if (newPage < totalPages) {
+      onChangePage("page", newPage);
+    }
+  };
+
+  const onPrevRange = () => {
+    const rangeSize = 5;
+    let newPage = currentPage - (currentPage % rangeSize) - 1;
+    if (newPage < 0) {
+      newPage = 0;
+    }
+    onChangePage("page", newPage);
   };
 
   const isNextButtonDisabled = () => {
@@ -146,7 +162,6 @@ function DataTable({
         </TableBody>
       </Table>
 
-      {/* Renderização condicional da paginação */}
       {totalPages > 1 && (
         <MDBox
           display="flex"
@@ -167,21 +182,17 @@ function DataTable({
             variant={pagination.variant ? pagination.variant : "gradient"}
             color={pagination.color ? pagination.color : "info"}
           >
-            <MDPagination
-              item
-              onClick={() => handleChangePage("prevRange")}
-              disabled={currentPage < 5}
-            >
-              <Icon>chevron_left</Icon>
-            </MDPagination>
+            {totalPages > 5 && (
+              <MDPagination item onClick={onPrevRange} disabled={currentPage < 5}>
+                <Icon>chevron_left</Icon>
+              </MDPagination>
+            )}
             {renderPagination()}
-            <MDPagination
-              item
-              onClick={() => handleChangePage("nextRange")}
-              disabled={isNextButtonDisabled()}
-            >
-              <Icon>chevron_right</Icon>
-            </MDPagination>
+            {totalPages > 5 && (
+              <MDPagination item onClick={onNextRange} disabled={isNextButtonDisabled()}>
+                <Icon>chevron_right</Icon>
+              </MDPagination>
+            )}
           </MDPagination>
         </MDBox>
       )}
@@ -219,7 +230,6 @@ DataTable.propTypes = {
   totalPages: PropTypes.number,
   onChangePage: PropTypes.func,
   currentPage: PropTypes.number,
-  totalPages: PropTypes.number,
 };
 
 export default DataTable;
