@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
 import Table from "@mui/material/Table";
@@ -10,10 +10,10 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
-import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
-import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
+import DataTableClientHeadCell from "examples/TablesClient/DataTableClient/DataTableClientHeadCell";
+import DataTableClientBodyCell from "examples/TablesClient/DataTableClient/DataTableClientBodyCell";
 
-function DataTable({
+function DataTableClient({
   canSearch,
   showTotalEntries,
   table,
@@ -57,6 +57,7 @@ function DataTable({
     return false;
   };
 
+  // Função atualizada para renderizar a paginação
   const renderPagination = () => {
     if (totalPages <= 1) {
       return null;
@@ -82,6 +83,7 @@ function DataTable({
     return paginationItems;
   };
 
+  // Função para avançar o intervalo de páginas
   const onNextRange = () => {
     const newPage = Math.floor(currentPage / 5) * 5 + 5;
     if (newPage < totalPages) {
@@ -89,6 +91,7 @@ function DataTable({
     }
   };
 
+  // Função para retroceder o intervalo de páginas
   const onPrevRange = () => {
     const rangeSize = 5;
     let newPage = currentPage - (currentPage % rangeSize) - 1;
@@ -102,6 +105,8 @@ function DataTable({
     const maxPageInCurrentRange = Math.floor(currentPage / 5) * 5 + 4;
     return maxPageInCurrentRange >= totalPages - 1;
   };
+
+  // Restante do seu componente...
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
@@ -126,7 +131,7 @@ function DataTable({
           {headerGroups.map((headerGroup, key) => (
             <TableRow key={key} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column, idx) => (
-                <DataTableHeadCell
+                <DataTableClientHeadCell
                   key={idx}
                   {...column.getHeaderProps(isSorted && column.getSortByToggleProps())}
                   width={column.width ? column.width : "auto"}
@@ -134,7 +139,7 @@ function DataTable({
                   sorted={setSortedValue(column)}
                 >
                   {column.render("Header")}
-                </DataTableHeadCell>
+                </DataTableClientHeadCell>
               ))}
             </TableRow>
           ))}
@@ -146,14 +151,14 @@ function DataTable({
               <TableRow key={key} {...row.getRowProps()}>
                 {row?.cells?.length
                   ? row?.cells?.map((cell, idx) => (
-                      <DataTableBodyCell
+                      <DataTableClientBodyCell
                         key={idx}
                         noBorder={noEndBorder && page.length - 1 === key}
                         align={cell.column.align ? cell.column.align : "left"}
                         {...cell.getCellProps()}
                       >
                         {cell.render("Cell")}
-                      </DataTableBodyCell>
+                      </DataTableClientBodyCell>
                     ))
                   : null}
               </TableRow>
@@ -200,7 +205,7 @@ function DataTable({
   );
 }
 
-DataTable.defaultProps = {
+DataTableClient.defaultProps = {
   canSearch: false,
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },
@@ -208,7 +213,7 @@ DataTable.defaultProps = {
   noEndBorder: false,
 };
 
-DataTable.propTypes = {
+DataTableClient.propTypes = {
   canSearch: PropTypes.bool,
   showTotalEntries: PropTypes.bool,
   table: PropTypes.objectOf(PropTypes.array).isRequired,
@@ -232,4 +237,4 @@ DataTable.propTypes = {
   currentPage: PropTypes.number,
 };
 
-export default DataTable;
+export default DataTableClient;

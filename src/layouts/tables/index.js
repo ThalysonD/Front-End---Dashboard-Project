@@ -1,4 +1,4 @@
-// @mui material components
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -14,9 +14,40 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
+import { fetchEmployees } from "services/employeeService";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
+  const [employees, setEmployees] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      setCurrentPage(0);
+    };
+  }, [setCurrentPage]);
+
+  useEffect(() => {
+    const getEmployees = async () => {
+      try {
+        const data = await fetchEmployees(currentPage);
+        setEmployees(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Erro ao buscar funcionários:", error);
+      }
+    };
+    getEmployees();
+  }, [currentPage]);
+
+  const handleChangePage = async (type, page) => {
+    setCurrentPage(page);
+  };
+
+  const { columns, rows } = authorsTableData({
+    employees,
+    totalPages,
+  });
 
   return (
     <DashboardLayout>
@@ -54,7 +85,10 @@ function Tables() {
               <MDBox pt={3}>
                 <DataTable
                   table={{ columns, rows }}
+                  totalPages={totalPages}
                   isSorted={false}
+                  currentPage={currentPage}
+                  onChangePage={handleChangePage}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
