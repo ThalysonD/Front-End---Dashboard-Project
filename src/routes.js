@@ -15,6 +15,7 @@ import ForgotPassword from "layouts/authentication/forgot-password";
 import PrivateRoute from "services/PrivateRoute";
 import UserProfile from "layouts/user-profile";
 import ClientProfile from "layouts/client-profile";
+import SalesProfile from "layouts/sale-profile";
 
 import Icon from "@mui/material/Icon";
 
@@ -71,15 +72,20 @@ const routes = [
   {
     type: "collapse",
     name: "Vender",
-    key: "sale",
+    key: "sales",
     icon: <Icon fontSize="small">sell</Icon>,
-    route: "/sale",
+    route: "/sales",
     component: <Sales />,
   },
   {
     key: "registerSales",
     route: "register/sale",
     component: <PrivateRoute>{<RegisterSale />}</PrivateRoute>,
+  },
+  {
+    key: "sale-profile",
+    route: "/sales-profile/:id",
+    component: <PrivateRoute>{<SalesProfile />}</PrivateRoute>,
   },
   {
     type: "collapse",

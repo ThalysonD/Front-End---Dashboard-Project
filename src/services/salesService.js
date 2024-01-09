@@ -64,4 +64,45 @@ const fetchClients = async (searchTerm = "") => {
   }
 };
 
-export { fetchSales, registerSale, fetchClients };
+const findSaleById = async (saleId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/venda/${saleId}`, {
+      headers: {
+        ...getTokenHeader(),
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+const updateSale = async (saleId, saleData) => {
+  try {
+    const response = await axios.put(`${BASE_URL}/venda/${saleId}`, saleData, {
+      headers: {
+        ...getTokenHeader(),
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+const deleteSale = async (saleId) => {
+  try {
+    await axios.delete(`${BASE_URL}/venda/${saleId}`, {
+      headers: {
+        ...getTokenHeader(),
+      },
+    });
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+export { fetchSales, registerSale, fetchClients, findSaleById, updateSale, deleteSale };
