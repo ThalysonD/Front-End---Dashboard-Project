@@ -6,10 +6,7 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
-import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -18,6 +15,11 @@ import ErrorIcon from "@mui/icons-material/Error";
 
 import { fetchClients, registerSale } from "services/salesService";
 import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const initialState = {
   clienteId: "",
@@ -109,6 +111,7 @@ CustomSelect.propTypes = {
 
 function CoverSales() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [selectedDate, setSelectedDate] = React.useState(dayjs());
 
   useEffect(() => {
     const loadClientes = async () => {
@@ -125,6 +128,12 @@ function CoverSales() {
 
   const handleChange = (field) => (e) => {
     dispatch({ type: "SET_FIELD", field, value: e.target.value });
+  };
+
+  const handleDateChange = (newValue) => {
+    setSelectedDate(newValue);
+    const formattedDate = dayjs(newValue).format("DD/MM/YYYY HH:mm");
+    dispatch({ type: "SET_FIELD", field: "data", value: formattedDate });
   };
 
   const handleValorChange = (event) => {
@@ -149,6 +158,7 @@ function CoverSales() {
       cliente: {
         id: clienteSelecionado.id,
       },
+      data: state.data,
       descricao: state.descricao,
       formaPagamento: state.formaPagamento,
       parcelamento: parseInt(state.parcelamento),
@@ -218,12 +228,27 @@ function CoverSales() {
               onChange={handleChange("descricao")}
             />
 
+            {/* Campo de Data da Venda */}
+            <MDBox mb={2} fullWidth>
+              <FormControl fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Data da Venda"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+            </MDBox>
+
             {/* Campo Forma de Pagamento */}
             <CustomSelect
               label="Forma de Pagamento"
               value={state.formaPagamento}
               onChange={handleChange("formaPagamento")}
               options={["Dinheiro", "Pix", "Cartão de Crédito", "Cartão de Débito"]}
+              sx={{ marginBottom: 2 }} // Adicione esta linha para criar espaço
             />
 
             {/* Campo Parcelamento */}
