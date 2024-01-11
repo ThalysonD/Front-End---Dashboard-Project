@@ -55,9 +55,10 @@ const SalesProfile = () => {
         if (saleData) {
           setSale({
             clienteNome: saleData.cliente.nome,
+            clienteId: saleData.cliente.id,
             email: saleData.cliente.email,
             descricao: saleData.descricao,
-            valor: saleData.valor,
+            valor: formatCurrency(saleData.valor),
             dataVenda: saleData.data,
             formaPagamento: saleData.formaPagamento,
             parcelamento: saleData.parcelamento,
@@ -118,6 +119,7 @@ const SalesProfile = () => {
     const updatedSaleData = {
       ...sale,
       cliente: { id: sale.clienteId },
+      valor: unformatCurrency(sale.valor),
     };
 
     try {
@@ -126,14 +128,14 @@ const SalesProfile = () => {
       setTimeout(() => {
         setIsEditable(false);
         setIsSuccess(false);
-      }, 1000);
+      }, 1500);
     } catch (error) {
       setIsError(true);
       console.error("Erro ao atualizar venda:", error);
       setTimeout(() => {
         setIsEditable(false);
         setIsError(false);
-      }, 1000);
+      }, 5000);
     } finally {
       setIsSubmitting(false);
     }
@@ -147,6 +149,27 @@ const SalesProfile = () => {
       clienteNome: selectedClient.nome,
       email: selectedClient.email,
     });
+  };
+
+  const formatCurrency = (value) => {
+    return `R$ ${parseFloat(value)
+      .toFixed(2)
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+  };
+
+  const unformatCurrency = (value) => {
+    return value.replace("R$ ", "").replace(/\./g, "").replace(",", ".");
+  };
+
+  const handleValorChange = (event) => {
+    let value = event.target.value;
+    value = value.replace(/[^0-9]/g, "");
+    value = parseInt(value, 10) || 0;
+    value = (value / 100).toFixed(2);
+    value = `R$ ${value.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+
+    setSale({ ...sale, valor: value });
   };
 
   return (
@@ -219,7 +242,7 @@ const SalesProfile = () => {
             type="text"
             label="Valor"
             value={sale.valor}
-            onChange={changeHandler}
+            onChange={handleValorChange}
             name="valor"
             disabled={!isEditable}
             sx={{ marginBottom: 2 }}

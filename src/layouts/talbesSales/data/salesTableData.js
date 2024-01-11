@@ -12,6 +12,13 @@ export default function SalesData({ sales }) {
     navigate(`/sales-profile/${salesId}`);
   };
 
+  const formatCurrency = (value) => {
+    return `R$ ${parseFloat(value)
+      .toFixed(2)
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+  };
+
   const Author = ({ name, email }) => (
     <MDBox display="flex" flexDirection="column" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium">
@@ -56,7 +63,7 @@ export default function SalesData({ sales }) {
         {sale.cliente?.nome || "Cliente não disponível"}
       </MDTypography>
     ),
-    valor: <MDTypography variant="caption">{`R$ ${sale.valor.toFixed(2)}`}</MDTypography>,
+    valor: <MDTypography variant="caption">{formatCurrency(sale.valor)}</MDTypography>,
     data: <MDTypography variant="caption">{sale.data}</MDTypography>,
     id: (
       <MDTypography

@@ -137,10 +137,17 @@ function CoverSales() {
   };
 
   const handleValorChange = (event) => {
-    let value = event.target.value.replace(/\D/g, "");
+    let value = event.target.value;
+    value = value.replace(/[^0-9]/g, "");
+    value = parseInt(value, 10) || 0;
     value = (value / 100).toFixed(2);
-    value = value.replace(".", ",");
+    value = `R$ ${value.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+
     dispatch({ type: "SET_FIELD", field: "valor", value });
+  };
+
+  const unformatCurrency = (value) => {
+    return parseFloat(value.replace("R$ ", "").replace(/\./g, "").replace(",", "."));
   };
 
   const handleSubmit = async (event) => {
@@ -163,10 +170,8 @@ function CoverSales() {
       formaPagamento: state.formaPagamento,
       parcelamento: parseInt(state.parcelamento),
       statusPagamento: state.statusPagamento,
-      valor: parseFloat(state.valor.replace(",", ".")),
+      valor: unformatCurrency(state.valor),
     };
-
-    console.log("Dados da Venda: ", saleData);
 
     try {
       await registerSale(saleData);
