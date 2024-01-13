@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  TextField,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CheckIcon from "@mui/icons-material/Check";
@@ -26,6 +27,10 @@ import Footer from "examples/Footer";
 import Header from "layouts/sale-profile/Header";
 import { useParams } from "react-router-dom";
 import { findSaleById, updateSale, deleteSale, fetchClients } from "services/salesService";
+import dayjs from "dayjs";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 
 const SalesProfile = () => {
   const navigate = useNavigate();
@@ -36,6 +41,7 @@ const SalesProfile = () => {
   const [isError, setIsError] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [clients, setClients] = useState([]);
+  const [selectedDate, setSelectedDate] = React.useState(dayjs());
   const [sale, setSale] = useState({
     clienteNome: "",
     email: "",
@@ -59,7 +65,7 @@ const SalesProfile = () => {
             email: saleData.cliente.email,
             descricao: saleData.descricao,
             valor: formatCurrency(saleData.valor),
-            dataVenda: saleData.data,
+            data: saleData.data,
             formaPagamento: saleData.formaPagamento,
             parcelamento: saleData.parcelamento,
             statusPagamento: saleData.statusPagamento,
@@ -172,6 +178,17 @@ const SalesProfile = () => {
     setSale({ ...sale, valor: value });
   };
 
+  const handleDateChange = (newValue) => {
+    setSelectedDate(newValue);
+    const formattedDate = dayjs(newValue).format("DD/MM/YYYY HH:mm");
+    setSale({ ...sale, dataVenda: formattedDate });
+  };
+
+  useEffect(() => {
+    // Atualiza o `selectedDate` quando o componente é montado ou quando `sale.dataVenda` muda
+    setSelectedDate(sale.dataVenda ? dayjs(sale.dataVenda) : dayjs());
+  }, [sale.dataVenda]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -247,15 +264,23 @@ const SalesProfile = () => {
             disabled={!isEditable}
             sx={{ marginBottom: 2 }}
           />
-          <MDInput
-            type="text"
-            label="Data da Venda"
-            value={sale.dataVenda}
-            onChange={changeHandler}
-            name="dataVenda"
-            disabled={!isEditable}
-            sx={{ marginBottom: 2 }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Data da Venda"
+              value={selectedDate}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
+              slotProps={{
+                textField: {
+                  format: "DD/MM/YYYY",
+                },
+              }}
+              name="dataVenda"
+              disabled={!isEditable}
+              sx={{ marginBottom: 2 }}
+            />
+          </LocalizationProvider>
+
           <MDInput
             type="text"
             label="Forma de Pagamento"
