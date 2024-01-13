@@ -12,6 +12,7 @@ import {
   InputLabel,
   FormControl,
   TextField,
+  InputAdornment,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CheckIcon from "@mui/icons-material/Check";
@@ -185,9 +186,13 @@ const SalesProfile = () => {
   };
 
   useEffect(() => {
-    // Atualiza o `selectedDate` quando o componente é montado ou quando `sale.dataVenda` muda
     setSelectedDate(sale.dataVenda ? dayjs(sale.dataVenda) : dayjs());
   }, [sale.dataVenda]);
+
+  const handleParcelamentoChange = (e) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+    setSale({ ...sale, parcelamento: onlyNums });
+  };
 
   return (
     <DashboardLayout>
@@ -217,13 +222,9 @@ const SalesProfile = () => {
         >
           {/* Campos do formulário */}
           {/* Cliente Select */}
-          {isEditable && (
+          {isEditable ? (
             <FormControl fullWidth sx={{ mb: 2, width: "100%", minWidth: 250 }}>
-              <InputLabel
-                sx={{ height: "50px", lineHeight: "50px" }} // Ajuste a altura do rótulo
-              >
-                Cliente
-              </InputLabel>
+              <InputLabel>Cliente</InputLabel>
               <Select
                 value={sale.clienteNome}
                 onChange={handleClienteChange}
@@ -231,16 +232,14 @@ const SalesProfile = () => {
                 sx={{ height: "44px" }}
               >
                 {clients.map((client) => (
-                  <MenuItem
-                    key={client.id}
-                    value={client.nome}
-                    sx={{ height: "50px" }} // Ajuste a altura dos itens do menu
-                  >
+                  <MenuItem key={client.id} value={client.nome}>
                     {client.nome}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+          ) : (
+            <MDInput type="text" label="Cliente" value={sale.clienteNome} disabled sx={{ mb: 2 }} />
           )}
 
           {/* Email (automatically updated) */}
@@ -281,33 +280,64 @@ const SalesProfile = () => {
             />
           </LocalizationProvider>
 
-          <MDInput
-            type="text"
-            label="Forma de Pagamento"
-            value={sale.formaPagamento}
-            onChange={changeHandler}
-            name="formaPagamento"
-            disabled={!isEditable}
-            sx={{ marginBottom: 2 }}
-          />
+          {/* Forma de Pagamento */}
+          {isEditable ? (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Forma de Pagamento</InputLabel>
+              <Select
+                value={sale.formaPagamento}
+                label="Forma de Pagamento"
+                onChange={(e) => setSale({ ...sale, formaPagamento: e.target.value })}
+                sx={{ height: "44px" }}
+              >
+                <MenuItem value={"Dinheiro"}>Dinheiro</MenuItem>
+                <MenuItem value={"Pix"}>Pix</MenuItem>
+                <MenuItem value={"Cartão de Crédito"}>Cartão de Crédito</MenuItem>
+                <MenuItem value={"Cartão de Débito"}>Cartão de Débito</MenuItem>
+              </Select>
+            </FormControl>
+          ) : (
+            <MDInput
+              type="text"
+              label="Forma de Pagamento"
+              value={sale.formaPagamento}
+              disabled
+              sx={{ mb: 2 }}
+            />
+          )}
+          {/* Parcelamento */}
           <MDInput
             type="text"
             label="Parcelamento"
             value={sale.parcelamento}
-            onChange={changeHandler}
+            onChange={handleParcelamentoChange}
             name="parcelamento"
             disabled={!isEditable}
             sx={{ marginBottom: 2 }}
           />
-          <MDInput
-            type="text"
-            label="Status do Pagamento"
-            value={sale.statusPagamento}
-            onChange={changeHandler}
-            name="statusPagamento"
-            disabled={!isEditable}
-            sx={{ marginBottom: 2 }}
-          />
+          {/* Status do Pagamento */}
+          {isEditable ? (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Status do Pagamento</InputLabel>
+              <Select
+                value={sale.statusPagamento}
+                onChange={(e) => setSale({ ...sale, statusPagamento: e.target.value })}
+                label="Status do Pagamento"
+                sx={{ height: "44px" }}
+              >
+                <MenuItem value={"Status Pendente"}>Pagamento Pendente</MenuItem>
+                <MenuItem value={"Status Aprovado"}>Pagamento Aprovado</MenuItem>
+              </Select>
+            </FormControl>
+          ) : (
+            <MDInput
+              type="text"
+              label="Status do Pagamento"
+              value={sale.statusPagamento}
+              disabled
+              sx={{ mb: 2 }}
+            />
+          )}
 
           <MDBox mt={2} display="flex" justifyContent="space-between">
             <MDBox display="flex">
