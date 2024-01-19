@@ -21,88 +21,70 @@ const getTokenHeader = () => {
   return { Authorization: `Bearer ${token}` };
 };
 
-const fetchSales = async (pageNumber = 0, pageSize = 10) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/venda?page=${pageNumber}&size=${pageSize}`, {
-      headers: {
-        ...getTokenHeader(),
-      },
-    });
+const apiRequest = async ({ method, url, data = null, params = null }) => {
+  const headers = {
+    ...getTokenHeader(),
+    "Content-Type": "application/json",
+  };
 
+  try {
+    const response = await axios({
+      method,
+      url: `${BASE_URL}${url}`,
+      headers,
+      data,
+      params,
+    });
     return response.data;
   } catch (error) {
     handleApiError(error);
   }
+};
+
+const fetchSales = async (pageNumber = 0, pageSize = 10) => {
+  return apiRequest({
+    method: "get",
+    url: "/venda",
+    params: { page: pageNumber, size: pageSize },
+  });
 };
 
 const registerSale = async (saleData) => {
-  try {
-    const response = await axios.post(`${BASE_URL}/venda`, saleData, {
-      headers: {
-        ...getTokenHeader(),
-        "Content-Type": "application/json",
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    handleApiError(error);
-  }
+  return apiRequest({
+    method: "post",
+    url: "/venda",
+    data: saleData,
+  });
 };
 
 const fetchClients = async (searchTerm = "") => {
-  try {
-    const response = await axios.get(`${BASE_URL}/cliente?search=${searchTerm}`, {
-      headers: {
-        ...getTokenHeader(),
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    handleApiError(error);
-  }
+  return apiRequest({
+    method: "get",
+    url: "/cliente",
+    params: { search: searchTerm },
+  });
 };
 
 const findSaleById = async (saleId) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/venda/${saleId}`, {
-      headers: {
-        ...getTokenHeader(),
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    handleApiError(error);
-  }
+  return apiRequest({
+    method: "get",
+    url: `/venda/${saleId}`,
+  });
 };
 
 const updateSale = async (saleId, saleData) => {
-  try {
-    const response = await axios.put(`${BASE_URL}/venda/${saleId}`, saleData, {
-      headers: {
-        ...getTokenHeader(),
-        "Content-Type": "application/json",
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    handleApiError(error);
-  }
+  return apiRequest({
+    method: "put",
+    url: `/venda/${saleId}`,
+    data: saleData,
+  });
 };
 
 const deleteSale = async (saleId) => {
-  try {
-    await axios.delete(`${BASE_URL}/venda/${saleId}`, {
-      headers: {
-        ...getTokenHeader(),
-      },
-    });
-  } catch (error) {
-    handleApiError(error);
-  }
+  return apiRequest({
+    method: "delete",
+    url: `/venda/${saleId}`,
+  });
 };
 
 export { fetchSales, registerSale, fetchClients, findSaleById, updateSale, deleteSale };

@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-
 import PropTypes from "prop-types";
 
 // @mui material components
@@ -9,30 +7,9 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-import breakpoints from "assets/theme/base/breakpoints";
-
 import backgroundImage from "assets/images/bg-profile.jpeg";
 
 function HeaderSalesProfile({ name, children }) {
-  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
-  const [setTabValue] = useState(0);
-
-  useEffect(() => {
-    function handleTabsOrientation() {
-      return window.innerWidth < breakpoints.values.sm
-        ? setTabsOrientation("vertical")
-        : setTabsOrientation("horizontal");
-    }
-
-    window.addEventListener("resize", handleTabsOrientation);
-
-    handleTabsOrientation();
-
-    return () => window.removeEventListener("resize", handleTabsOrientation);
-  }, [tabsOrientation]);
-
-  const handleSetTabValue = (event, newValue) => setTabValue(newValue);
-
   return (
     <MDBox position="relative" mb={5}>
       <MDBox

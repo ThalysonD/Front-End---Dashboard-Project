@@ -46,8 +46,6 @@ function reducer(state, action) {
       return { ...initialState, isSuccess: true };
     case "ERROR":
       return { ...state, isError: true, errorMessage: action.message, isSubmitting: false };
-    case "TOGGLE_PASSWORD_VISIBILITY":
-      return { ...state, showPassword: !state.showPassword };
     case "RESET":
       return initialState;
     case "LOAD_CLIENTES_START":

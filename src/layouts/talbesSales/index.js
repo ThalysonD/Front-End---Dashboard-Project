@@ -22,12 +22,6 @@ function TablesSales() {
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    return () => {
-      setCurrentPage(0);
-    };
-  }, [setCurrentPage]);
-
-  useEffect(() => {
     const getSales = async () => {
       try {
         const data = await fetchSales(currentPage);

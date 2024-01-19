@@ -12,7 +12,6 @@ import {
   InputLabel,
   FormControl,
   TextField,
-  InputAdornment,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CheckIcon from "@mui/icons-material/Check";
