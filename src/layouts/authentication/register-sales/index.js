@@ -90,7 +90,7 @@ function CustomSelect({ label, value, onChange, options }) {
     <MDBox mb={2} fullWidth>
       <FormControl fullWidth>
         <InputLabel>{label}</InputLabel>
-        <Select value={value} onChange={onChange} label={label} sx={{ height: "50px" }}>
+        <Select value={value} onChange={onChange} label={label} sx={{ height: "44px" }}>
           {options.map((option) => (
             <MenuItem key={option} value={option}>
               {option}
@@ -127,7 +127,14 @@ function CoverSales() {
   }, []);
 
   const handleChange = (field) => (e) => {
-    dispatch({ type: "SET_FIELD", field, value: e.target.value });
+    if (field === "formaPagamento") {
+      const formaPagamento = e.target.value;
+      const parcelamento = formaPagamento === "Cartão de Crédito" ? state.parcelamento : "1";
+      dispatch({ type: "SET_FIELD", field: "formaPagamento", value: formaPagamento });
+      dispatch({ type: "SET_FIELD", field: "parcelamento", value: parcelamento });
+    } else {
+      dispatch({ type: "SET_FIELD", field, value: e.target.value });
+    }
   };
 
   const handleDateChange = (newValue) => {
@@ -242,6 +249,11 @@ function CoverSales() {
                     value={selectedDate}
                     onChange={handleDateChange}
                     renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
+                    slotProps={{
+                      textField: {
+                        format: "DD/MM/YYYY",
+                      },
+                    }}
                   />
                 </LocalizationProvider>
               </FormControl>
@@ -253,17 +265,19 @@ function CoverSales() {
               value={state.formaPagamento}
               onChange={handleChange("formaPagamento")}
               options={["Dinheiro", "Pix", "Cartão de Crédito", "Cartão de Débito"]}
-              sx={{ marginBottom: 2 }} // Adicione esta linha para criar espaço
+              sx={{ marginBottom: 2 }}
             />
 
             {/* Campo Parcelamento */}
-            <CustomInput
-              label="Parcelamento"
-              type="number"
-              InputProps={{ inputProps: { min: 0 } }}
-              value={state.parcelamento}
-              onChange={handleChange("parcelamento")}
-            />
+            {state.formaPagamento === "Cartão de Crédito" && (
+              <CustomInput
+                label="Número de Parcelas"
+                type="number"
+                InputProps={{ inputProps: { min: 1 } }} // Ajuste para permitir mínimo de 1 parcela
+                value={state.parcelamento}
+                onChange={handleChange("parcelamento")}
+              />
+            )}
 
             {/* Campo Status de Pagamento */}
             <CustomSelect
@@ -274,19 +288,7 @@ function CoverSales() {
             />
 
             {/* Campo Valor */}
-            <TextField
-              label="Valor"
-              value={state.valor}
-              onChange={handleValorChange}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" style={{ fontSize: "0.875rem" }}>
-                    R$
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <TextField label="Valor" value={state.valor} onChange={handleValorChange} fullWidth />
 
             {/* Botão de Registro */}
             <MDBox mt={4} mb={1}>
