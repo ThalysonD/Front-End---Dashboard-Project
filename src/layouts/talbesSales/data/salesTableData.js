@@ -19,6 +19,10 @@ export default function SalesData({ sales }) {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
   };
 
+  const formatDate = (dateString) => {
+    return dateString.split(" ")[0];
+  };
+
   const Author = ({ name, email }) => (
     <MDBox display="flex" flexDirection="column" alignItems="center" lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium">
@@ -64,7 +68,7 @@ export default function SalesData({ sales }) {
       </MDTypography>
     ),
     valor: <MDTypography variant="caption">{formatCurrency(sale.valor)}</MDTypography>,
-    data: <MDTypography variant="caption">{sale.data}</MDTypography>,
+    data: <MDTypography variant="caption">{formatDate(sale.data)}</MDTypography>,
     id: (
       <MDTypography
         component="a"
