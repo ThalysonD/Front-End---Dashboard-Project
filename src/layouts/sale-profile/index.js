@@ -41,7 +41,7 @@ const SalesProfile = () => {
   const [isError, setIsError] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [clients, setClients] = useState([]);
-  const [selectedDate, setSelectedDate] = React.useState(dayjs());
+  const [selectedDate, setSelectedDate] = useState(dayjs());
   const [sale, setSale] = useState({
     clienteNome: "",
     email: "",
@@ -66,11 +66,12 @@ const SalesProfile = () => {
             email: saleData.cliente.email,
             descricao: saleData.descricao,
             valor: formatCurrency(saleData.valor),
-            data: saleData.data,
+            dataVenda: saleData.data,
             formaPagamento: saleData.formaPagamento,
             parcelamento: saleData.parcelamento,
             statusPagamento: statusPagamento,
           });
+          setSelectedDate(dayjs(saleData.data, "DD/MM/YYYY HH:mm")); // Ajuste aqui
         }
       } catch (error) {
         console.error("Erro ao buscar detalhes da venda:", error);
@@ -148,6 +149,7 @@ const SalesProfile = () => {
       cliente: { id: sale.clienteId },
       valor: unformatCurrency(sale.valor),
       statusPagamento: convertStatusForBackend(sale.statusPagamento),
+      data: selectedDate.format("DD/MM/YYYY HH:mm"),
     };
 
     try {
@@ -202,12 +204,11 @@ const SalesProfile = () => {
 
   const handleDateChange = (newValue) => {
     setSelectedDate(newValue);
-    const formattedDate = dayjs(newValue).format("DD/MM/YYYY HH:mm");
-    setSale({ ...sale, dataVenda: formattedDate });
+    setSale({ ...sale, dataVenda: newValue.format("DD/MM/YYYY HH:mm") }); // Ajuste aqui
   };
 
   useEffect(() => {
-    setSelectedDate(sale.dataVenda ? dayjs(sale.dataVenda) : dayjs());
+    setSelectedDate(sale.dataVenda ? dayjs(sale.dataVenda, "DD/MM/YYYY HH:mm") : dayjs());
   }, [sale.dataVenda]);
 
   const handleParcelamentoChange = (e) => {

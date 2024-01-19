@@ -6,7 +6,6 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
-import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import CircularProgress from "@mui/material/CircularProgress";
