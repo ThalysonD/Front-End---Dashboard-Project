@@ -60,6 +60,7 @@ const SalesProfile = () => {
       try {
         const saleData = await findSaleById(id);
         if (saleData) {
+          const statusPagamento = convertStatusForDisplay(saleData.statusPagamento);
           setSale({
             clienteNome: saleData.cliente.nome,
             clienteId: saleData.cliente.id,
@@ -69,7 +70,7 @@ const SalesProfile = () => {
             data: saleData.data,
             formaPagamento: saleData.formaPagamento,
             parcelamento: saleData.parcelamento,
-            statusPagamento: saleData.statusPagamento,
+            statusPagamento: statusPagamento,
           });
         }
       } catch (error) {
@@ -79,6 +80,26 @@ const SalesProfile = () => {
 
     fetchSaleData();
   }, [id]);
+
+  // Função para converter o status do pagamento para o formato de exibição
+  const convertStatusForDisplay = (status) => {
+    if (status === "Status Aprovado") {
+      return "Pagamento Aprovado";
+    } else if (status === "Status Pendente") {
+      return "Pagamento Pendente";
+    }
+    return status;
+  };
+
+  // Função para converter o status do pagamento para o formato esperado pelo backend
+  const convertStatusForBackend = (status) => {
+    if (status === "Pagamento Aprovado") {
+      return "Status Aprovado";
+    } else if (status === "Pagamento Pendente") {
+      return "Status Pendente";
+    }
+    return status;
+  };
 
   useEffect(() => {
     const fetchClientsData = async () => {
@@ -127,6 +148,7 @@ const SalesProfile = () => {
       ...sale,
       cliente: { id: sale.clienteId },
       valor: unformatCurrency(sale.valor),
+      statusPagamento: convertStatusForBackend(sale.statusPagamento),
     };
 
     try {
@@ -192,6 +214,15 @@ const SalesProfile = () => {
   const handleParcelamentoChange = (e) => {
     const onlyNums = e.target.value.replace(/[^0-9]/g, "");
     setSale({ ...sale, parcelamento: onlyNums });
+  };
+
+  const handleFormaPagamentoChange = (e) => {
+    const formaPagamento = e.target.value;
+    setSale({
+      ...sale,
+      formaPagamento: formaPagamento,
+      parcelamento: formaPagamento === "Cartão de Crédito" ? sale.parcelamento : "1",
+    });
   };
 
   return (
@@ -264,20 +295,30 @@ const SalesProfile = () => {
             sx={{ marginBottom: 2 }}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Data da Venda"
-              value={selectedDate}
-              onChange={handleDateChange}
-              renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
-              slotProps={{
-                textField: {
-                  format: "DD/MM/YYYY",
-                },
-              }}
-              name="dataVenda"
-              disabled={!isEditable}
-              sx={{ marginBottom: 2 }}
-            />
+            {isEditable ? (
+              <DatePicker
+                label="Data da Venda"
+                value={selectedDate}
+                onChange={handleDateChange}
+                renderInput={(params) => <TextField {...params} fullWidth variant="outlined" />}
+                slotProps={{
+                  textField: {
+                    format: "DD/MM/YYYY",
+                  },
+                }}
+                name="dataVenda"
+                disabled={!isEditable}
+                sx={{ marginBottom: 2 }}
+              />
+            ) : (
+              <MDInput
+                type="text"
+                label="Data da Venda"
+                value={dayjs(selectedDate).format("DD/MM/YYYY")}
+                disabled
+                sx={{ mb: 2 }}
+              />
+            )}
           </LocalizationProvider>
 
           {/* Forma de Pagamento */}
@@ -286,8 +327,8 @@ const SalesProfile = () => {
               <InputLabel>Forma de Pagamento</InputLabel>
               <Select
                 value={sale.formaPagamento}
+                onChange={handleFormaPagamentoChange}
                 label="Forma de Pagamento"
-                onChange={(e) => setSale({ ...sale, formaPagamento: e.target.value })}
                 sx={{ height: "44px" }}
               >
                 <MenuItem value={"Dinheiro"}>Dinheiro</MenuItem>
@@ -306,15 +347,17 @@ const SalesProfile = () => {
             />
           )}
           {/* Parcelamento */}
-          <MDInput
-            type="text"
-            label="Parcelamento"
-            value={sale.parcelamento}
-            onChange={handleParcelamentoChange}
-            name="parcelamento"
-            disabled={!isEditable}
-            sx={{ marginBottom: 2 }}
-          />
+          {sale.formaPagamento === "Cartão de Crédito" && (
+            <MDInput
+              type="text"
+              label="Número de Parcelas"
+              value={sale.parcelamento}
+              onChange={handleParcelamentoChange}
+              name="parcelamento"
+              disabled={!isEditable}
+              sx={{ marginBottom: 2 }}
+            />
+          )}
           {/* Status do Pagamento */}
           {isEditable ? (
             <FormControl fullWidth sx={{ mb: 2 }}>
@@ -325,8 +368,8 @@ const SalesProfile = () => {
                 label="Status do Pagamento"
                 sx={{ height: "44px" }}
               >
-                <MenuItem value={"Status Pendente"}>Pagamento Pendente</MenuItem>
-                <MenuItem value={"Status Aprovado"}>Pagamento Aprovado</MenuItem>
+                <MenuItem value={"Pagamento Pendente"}>Pagamento Pendente</MenuItem>
+                <MenuItem value={"Pagamento Aprovado"}>Pagamento Aprovado</MenuItem>
               </Select>
             </FormControl>
           ) : (

@@ -273,7 +273,7 @@ function CoverSales() {
               <CustomInput
                 label="Número de Parcelas"
                 type="number"
-                InputProps={{ inputProps: { min: 1 } }} // Ajuste para permitir mínimo de 1 parcela
+                InputProps={{ inputProps: { min: 1 } }}
                 value={state.parcelamento}
                 onChange={handleChange("parcelamento")}
               />
