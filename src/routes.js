@@ -1,5 +1,6 @@
 import SignIn from "layouts/authentication/sign-in";
 import Dashboard from "layouts/dashboard";
+import Projects from "layouts/tablesProjects";
 import Employees from "layouts/tables";
 import Clients from "layouts/tablesClient";
 import Sales from "layouts/talbesSales";
@@ -32,6 +33,14 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <PrivateRoute>{<Dashboard />}</PrivateRoute>,
+  },
+  {
+    type: "collapse",
+    name: "Projetos",
+    key: "projects",
+    icon: <Icon fontSize="small">work</Icon>,
+    route: "/projetos",
+    component: <PrivateRoute>{<Projects />}</PrivateRoute>,
   },
   {
     type: "collapse",
