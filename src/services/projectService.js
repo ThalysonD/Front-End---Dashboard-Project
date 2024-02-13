@@ -49,4 +49,26 @@ const fetchProjects = async (pageNumber = 0, pageSize = 10) => {
   });
 };
 
-export { fetchProjects };
+const findProjectById = async (projectId) => {
+  return apiRequest({
+    method: "get",
+    url: `/projeto/${projectId}`,
+  });
+};
+
+const deleteProject = async (projectId) => {
+  return apiRequest({
+    method: "delete",
+    url: `/projeto/${projectId}`,
+  });
+};
+
+const updateProject = async (projectId, projectData) => {
+  return apiRequest({
+    method: "put",
+    url: `/projeto/${projectId}`,
+    data: projectData,
+  });
+};
+
+export { fetchProjects, findProjectById, deleteProject, updateProject };

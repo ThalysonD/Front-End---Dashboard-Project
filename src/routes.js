@@ -17,6 +17,7 @@ import PrivateRoute from "services/PrivateRoute";
 import UserProfile from "layouts/user-profile";
 import ClientProfile from "layouts/client-profile";
 import SalesProfile from "layouts/sale-profile";
+import ProjectProfile from "layouts/project-profile";
 
 import Icon from "@mui/material/Icon";
 
@@ -41,6 +42,11 @@ const routes = [
     icon: <Icon fontSize="small">work</Icon>,
     route: "/projetos",
     component: <PrivateRoute>{<Projects />}</PrivateRoute>,
+  },
+  {
+    key: "project-profile",
+    route: "/project-profile/:id",
+    component: <PrivateRoute>{<ProjectProfile />}</PrivateRoute>,
   },
   {
     type: "collapse",

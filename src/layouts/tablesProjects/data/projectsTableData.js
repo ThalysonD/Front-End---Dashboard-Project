@@ -79,6 +79,7 @@ const ProjectsData = ({ projects }) => {
         color="text"
         fontWeight="medium"
         onClick={() => handleDetailsClick(project.id)}
+        style={{ cursor: "pointer" }}
       >
         Ver mais
       </MDTypography>

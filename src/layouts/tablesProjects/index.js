@@ -11,7 +11,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-import DataTable from "examples/Tables/DataTable"; // Asumindo que você tem um componente DataTable genérico
+import DataTable from "examples/Tables/DataTable";
 import ProjectsData from "layouts/tablesProjects/data/projectsTableData";
 import { fetchProjects } from "services/projectService";
 
